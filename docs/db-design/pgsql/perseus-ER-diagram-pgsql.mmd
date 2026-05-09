@@ -1,0 +1,958 @@
+erDiagram
+    Permissions {
+        VARCHAR emailaddress
+        VARCHAR permission
+        TEXT md5_hash PK
+    }
+
+    Scraper {
+        VARCHAR Active
+        INTEGER Complete
+        INTEGER ControlFileID
+        VARCHAR DocumentID
+        BYTEA File
+        VARCHAR FileType
+        VARCHAR Filename
+        VARCHAR FilenameSavedAs
+        INTEGER ID PK
+        VARCHAR Message
+        VARCHAR ReceivedFrom
+        VARCHAR Result
+        VARCHAR ScraperID
+        VARCHAR ScraperMessage
+        VARCHAR ScraperSendTo
+        TIMESTAMP ScrapingFinishedOn
+        TIMESTAMP ScrapingStartedOn
+        VARCHAR ScrapingStatus
+        TIMESTAMP Timestamp
+    }
+
+    alembic_version {
+        VARCHAR(32) version_num PK
+    }
+
+    cm_application {
+        INTEGER application_group_id
+        INTEGER application_id PK
+        VARCHAR description
+        SMALLINT is_active
+        VARCHAR jira_id
+        VARCHAR label
+        INTEGER owner_user_id
+        VARCHAR url
+    }
+
+    cm_application_group {
+        INTEGER application_group_id PK
+        VARCHAR label
+    }
+
+    cm_group {
+        VARCHAR domain_id
+        INTEGER group_id PK
+        INTEGER is_active
+        TIMESTAMP last_modified
+        VARCHAR name
+    }
+
+    cm_project {
+        SMALLINT display_order
+        INTEGER group_id
+        INTEGER is_active
+        VARCHAR label
+        SMALLINT project_id PK
+    }
+
+    cm_unit {
+        VARCHAR description
+        INTEGER dimensions_id
+        NUMERIC factor
+        INTEGER id PK
+        VARCHAR longname
+        VARCHAR name
+        NUMERIC offset
+    }
+
+    cm_unit_compare {
+        INTEGER from_unit_id PK
+        INTEGER to_unit_id PK
+    }
+
+    cm_unit_dimensions {
+        NUMERIC amount_of_substance
+        INTEGER default_unit_id
+        NUMERIC electric_current
+        INTEGER id PK
+        NUMERIC length
+        NUMERIC luminous_intensity
+        NUMERIC mass
+        VARCHAR name
+        NUMERIC thermodynamic_temperature
+        NUMERIC time
+    }
+
+    cm_user {
+        VARCHAR domain_id
+        VARCHAR email
+        INTEGER is_active
+        VARCHAR login
+        VARCHAR name
+        UUID object_id
+        INTEGER user_id PK
+    }
+
+    cm_user_group {
+        INTEGER group_id PK
+        INTEGER user_id PK
+    }
+
+    coa {
+        INTEGER goo_type_id FK,UK
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    coa_spec {
+        INTEGER coa_id FK,UK
+        VARCHAR equal_bound
+        INTEGER id PK
+        DOUBLE_PRECISION lower_bound
+        DOUBLE_PRECISION lower_equal_bound
+        INTEGER property_id FK,UK
+        INTEGER result_precision
+        DOUBLE_PRECISION upper_bound
+        DOUBLE_PRECISION upper_equal_bound
+    }
+
+    color {
+        VARCHAR name PK
+    }
+
+    container {
+        INTEGER container_type_id FK
+        TIMESTAMP created_on
+        INTEGER depth
+        INTEGER id PK
+        INTEGER left_id
+        DOUBLE_PRECISION mass
+        VARCHAR name
+        VARCHAR position_name
+        VARCHAR position_x_coordinate
+        VARCHAR position_y_coordinate
+        INTEGER right_id
+        VARCHAR scope_id
+        VARCHAR uid UK
+    }
+
+    container_history {
+        INTEGER container_id FK
+        INTEGER history_id FK
+        INTEGER id PK
+    }
+
+    container_type {
+        INTEGER id PK
+        INTEGER is_equipment
+        INTEGER is_gooable
+        INTEGER is_parent
+        INTEGER is_restricted
+        INTEGER is_single
+        VARCHAR name UK
+    }
+
+    container_type_position {
+        INTEGER child_container_type_id FK
+        INTEGER id PK
+        INTEGER parent_container_type_id FK,UK
+        VARCHAR position_name UK
+        VARCHAR position_x_coordinate
+        VARCHAR position_y_coordinate
+    }
+
+    display_layout {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    display_type {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    external_goo_type {
+        VARCHAR external_label UK
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        INTEGER manufacturer_id FK,UK
+    }
+
+    fatsmurf {
+        INTEGER added_by
+        TIMESTAMP added_on
+        INTEGER container_id FK
+        VARCHAR description
+        DOUBLE_PRECISION duration
+        INTEGER id PK
+        TIMESTAMP inserted_on
+        VARCHAR name
+        INTEGER organization_id FK
+        INTEGER recycled_bottoms_id
+        TIMESTAMP run_complete
+        TIMESTAMP run_on
+        INTEGER smurf_id FK
+        INTEGER themis_sample_id
+        INTEGER triton_task_id
+        VARCHAR uid UK
+        TIMESTAMP updated_on
+        INTEGER workflow_step_id FK
+    }
+
+    fatsmurf_attachment {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        BYTEA attachment
+        VARCHAR attachment_mime_type
+        VARCHAR attachment_name
+        VARCHAR description
+        INTEGER fatsmurf_id FK
+        INTEGER id PK
+    }
+
+    fatsmurf_comment {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        VARCHAR comment
+        INTEGER fatsmurf_id FK
+        INTEGER id PK
+    }
+
+    fatsmurf_history {
+        INTEGER fatsmurf_id FK
+        INTEGER history_id FK
+        INTEGER id PK
+    }
+
+    fatsmurf_reading {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        INTEGER fatsmurf_id FK,UK
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    feed_type {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        DOUBLE_PRECISION correction_factor
+        VARCHAR correction_method
+        VARCHAR description
+        INTEGER disabled
+        INTEGER id PK
+        VARCHAR name
+        INTEGER updated_by_id FK
+        TIMESTAMP updated_on
+    }
+
+    field_map {
+        VARCHAR database_id
+        VARCHAR description
+        INTEGER display_order
+        INTEGER field_map_block_id FK
+        INTEGER field_map_set_id FK
+        INTEGER field_map_type_id FK
+        INTEGER id PK
+        VARCHAR lookup
+        VARCHAR lookup_service
+        VARCHAR name
+        INTEGER nullable
+        VARCHAR onchange
+        INTEGER save_sequence
+        VARCHAR setter
+    }
+
+    field_map_block {
+        VARCHAR filter UK
+        INTEGER id PK
+        VARCHAR scope UK
+    }
+
+    field_map_display_type {
+        VARCHAR display
+        INTEGER display_layout_id FK
+        INTEGER display_type_id FK,UK
+        INTEGER field_map_id FK,UK
+        INTEGER id PK
+        INTEGER manditory
+    }
+
+    field_map_display_type_user {
+        INTEGER field_map_display_type_id UK
+        INTEGER id PK
+        INTEGER user_id FK,UK
+    }
+
+    field_map_set {
+        VARCHAR color
+        INTEGER display_order
+        INTEGER id PK
+        VARCHAR name
+        INTEGER size
+        INTEGER tab_group_id
+    }
+
+    field_map_type {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    goo {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        VARCHAR catalog_label
+        INTEGER container_id FK
+        VARCHAR description
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        TIMESTAMP inserted_on
+        INTEGER manufacturer_id FK
+        VARCHAR name
+        DOUBLE_PRECISION original_mass
+        DOUBLE_PRECISION original_volume
+        SMALLINT project_id
+        DATE received_on
+        INTEGER recipe_id FK
+        INTEGER recipe_part_id FK
+        INTEGER triton_task_id
+        VARCHAR uid UK
+        TIMESTAMP updated_on
+        INTEGER workflow_step_id FK
+    }
+
+    goo_attachment {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        BYTEA attachment
+        VARCHAR attachment_mime_type
+        VARCHAR attachment_name
+        VARCHAR description
+        INTEGER goo_attachment_type_id FK
+        INTEGER goo_id FK
+        INTEGER id PK
+    }
+
+    goo_attachment_type {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    goo_comment {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        VARCHAR category
+        VARCHAR comment
+        INTEGER goo_id FK
+        INTEGER id PK
+    }
+
+    goo_history {
+        INTEGER goo_id FK
+        INTEGER history_id FK
+        INTEGER id PK
+    }
+
+    goo_process_queue_type {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    goo_type {
+        VARCHAR abbreviation
+        VARCHAR casrn
+        VARCHAR color
+        DOUBLE_PRECISION density_kg_l
+        INTEGER depth
+        INTEGER disabled
+        INTEGER id PK
+        VARCHAR iupac
+        INTEGER left_id UK
+        VARCHAR name UK
+        INTEGER right_id UK
+        VARCHAR scope_id UK
+    }
+
+    goo_type_combine_component {
+        INTEGER goo_type_combine_target_id FK,UK
+        INTEGER goo_type_id FK,UK
+        INTEGER id PK
+    }
+
+    goo_type_combine_target {
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        INTEGER sort_order
+    }
+
+    history {
+        TIMESTAMP created_on
+        INTEGER creator_id FK
+        INTEGER history_type_id FK
+        INTEGER id PK
+    }
+
+    history_type {
+        VARCHAR format
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    history_value {
+        INTEGER history_id FK
+        INTEGER id PK
+        VARCHAR value
+    }
+
+    m_downstream {
+        VARCHAR end_point PK
+        INTEGER level
+        VARCHAR path PK
+        VARCHAR start_point PK
+    }
+
+    m_number {
+        INTEGER id
+        TEXT md5_hash PK
+    }
+
+    m_upstream {
+        VARCHAR end_point PK
+        INTEGER level
+        VARCHAR path PK
+        VARCHAR start_point PK
+    }
+
+    m_upstream_dirty_leaves {
+        VARCHAR material_uid
+        TEXT md5_hash PK
+    }
+
+    manufacturer {
+        VARCHAR goo_prefix
+        INTEGER id PK
+        VARCHAR location UK
+        VARCHAR name UK
+    }
+
+    material_inventory {
+        INTEGER allocation_container_id FK
+        VARCHAR comment
+        INTEGER created_by_id FK
+        TIMESTAMP created_on
+        REAL current_mass_kg
+        REAL current_volume_l
+        DATE expiration_date
+        INTEGER id PK
+        INTEGER inventory_type_id FK
+        INTEGER is_active
+        INTEGER location_container_id FK
+        INTEGER material_id FK,UK
+        INTEGER recipe_id FK
+        INTEGER updated_by_id FK
+        TIMESTAMP updated_on
+    }
+    material_inventory_type {
+        VARCHAR description
+        INTEGER id PK
+        INTEGER is_active
+        VARCHAR name UK
+    }
+
+    material_inventory_threshold {
+        INTEGER created_by_id FK
+        TIMESTAMP created_on
+        INTEGER id PK
+        INTEGER inventory_type_id FK,UK
+        INTEGER material_type_id FK,UK
+        INTEGER max_item_count
+        DOUBLE_PRECISION max_mass_kg
+        DOUBLE_PRECISION max_volume_l
+        INTEGER min_item_count
+        DOUBLE_PRECISION min_mass_kg
+        DOUBLE_PRECISION min_volume_l
+        INTEGER updated_by_id FK
+        TIMESTAMP updated_on
+    }
+
+    material_inventory_threshold_notify_user {
+        INTEGER threshold_id PK,FK
+        INTEGER user_id PK,FK
+    }
+
+    material_qc {
+        VARCHAR entity_type_name
+        INTEGER foreign_entity_id
+        INTEGER id PK
+        INTEGER material_id FK
+        VARCHAR qc_process_uid
+    }
+
+    material_transition {
+        TIMESTAMP added_on
+        VARCHAR material_id PK
+        VARCHAR transition_id PK,FK
+    }
+
+    migration {
+        TIMESTAMP created_on
+        VARCHAR description
+        INTEGER id PK
+    }
+
+    perseus_user {
+        INTEGER admin
+        INTEGER common_id
+        VARCHAR domain_id UK
+        INTEGER id PK
+        VARCHAR login UK
+        VARCHAR mail
+        INTEGER manufacturer_id FK
+        VARCHAR name
+        INTEGER super
+    }
+
+    person {
+        VARCHAR domain_id UK
+        VARCHAR email
+        INTEGER id PK
+        INTEGER is_active
+        VARCHAR km_session_id
+        TIMESTAMP last_login
+        VARCHAR login
+        VARCHAR name
+    }
+
+    poll {
+        INTEGER bounds_limit
+        INTEGER detection
+        INTEGER fatsmurf_reading_id FK,UK
+        INTEGER id PK
+        DOUBLE_PRECISION limit_of_detection
+        DOUBLE_PRECISION limit_of_quantification
+        DOUBLE_PRECISION lower_calibration_limit
+        INTEGER smurf_property_id FK,UK
+        DOUBLE_PRECISION standard_deviation
+        DOUBLE_PRECISION upper_calibration_limit
+        VARCHAR value
+    }
+
+    poll_history {
+        INTEGER history_id FK
+        INTEGER id PK
+        INTEGER poll_id FK
+    }
+
+    prefix_incrementor {
+        INTEGER counter
+        VARCHAR prefix PK
+    }
+
+    property {
+        VARCHAR description
+        INTEGER id PK
+        VARCHAR name UK
+        INTEGER unit_id FK,UK
+    }
+
+    property_option {
+        INTEGER disabled
+        INTEGER id PK
+        VARCHAR label UK
+        INTEGER property_id FK,UK
+        INTEGER value UK
+    }
+
+    recipe {
+        INTEGER QC
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        VARCHAR description
+        INTEGER feed_type_id FK
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        DOUBLE_PRECISION inoculant_percent
+        INTEGER is_archived
+        INTEGER is_preferred
+        VARCHAR name UK
+        DOUBLE_PRECISION post_inoc_volume_ml
+        VARCHAR sop
+        VARCHAR sterilization_method
+        DOUBLE_PRECISION stock_concentration
+        INTEGER workflow_id FK
+    }
+
+    recipe_part {
+        DOUBLE_PRECISION amount
+        VARCHAR description
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        INTEGER part_recipe_id FK
+        INTEGER position
+        INTEGER recipe_id FK
+        DOUBLE_PRECISION target_conc_in_media
+        DOUBLE_PRECISION target_post_inoc_conc
+        INTEGER unit_id FK
+        INTEGER workflow_step_id FK
+    }
+
+    recipe_project_assignment {
+        TEXT md5_hash PK
+        SMALLINT project_id
+        INTEGER recipe_id FK
+    }
+
+    robot_log {
+        INTEGER class_id
+        TIMESTAMP completed_on
+        TIMESTAMP created_on
+        VARCHAR file_name
+        INTEGER id PK
+        INTEGER loadable
+        INTEGER loaded
+        TIMESTAMP loaded_on
+        VARCHAR log_text
+        VARCHAR robot_log_checksum
+        INTEGER robot_log_type_id FK
+        INTEGER robot_run_id FK
+        VARCHAR source
+        TIMESTAMP started_on
+    }
+
+    robot_log_container_sequence {
+        INTEGER container_id FK,UK
+        INTEGER id PK
+        TIMESTAMP processed_on
+        INTEGER robot_log_id FK,UK
+        INTEGER sequence_type_id FK,UK
+    }
+
+    robot_log_error {
+        VARCHAR error_text
+        INTEGER id PK
+        INTEGER robot_log_id FK
+    }
+
+    robot_log_read {
+        INTEGER id PK
+        INTEGER property_id FK
+        INTEGER robot_log_id FK
+        VARCHAR source_barcode
+        INTEGER source_material_id FK
+        VARCHAR source_position
+        VARCHAR value
+    }
+
+    robot_log_transfer {
+        VARCHAR destination_barcode
+        INTEGER destination_material_id FK
+        VARCHAR destination_position
+        INTEGER id PK
+        INTEGER material_type_id
+        INTEGER robot_log_id FK
+        VARCHAR source_barcode
+        INTEGER source_material_id FK
+        VARCHAR source_position
+        TIMESTAMP transfer_time
+        VARCHAR transfer_volume
+    }
+
+    robot_log_type {
+        INTEGER auto_process
+        INTEGER destination_container_type_id FK
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    robot_run {
+        INTEGER all_qc_passed
+        INTEGER all_themis_submitted
+        INTEGER id PK
+        VARCHAR name UK
+        INTEGER robot_id FK
+    }
+
+    s_number {
+        INTEGER id
+        TEXT md5_hash PK
+    }
+
+    saved_search {
+        INTEGER added_by FK,UK
+        TIMESTAMP added_on
+        INTEGER class_id
+        INTEGER id PK
+        INTEGER include_downstream
+        INTEGER is_private
+        VARCHAR name UK
+        VARCHAR parameter_string
+    }
+
+    sequence_type {
+        INTEGER id PK
+        VARCHAR name
+    }
+
+    smurf {
+        INTEGER class_id
+        VARCHAR description
+        INTEGER disabled
+        INTEGER id PK
+        VARCHAR name UK
+        INTEGER themis_method_id
+    }
+
+    smurf_goo_type {
+        INTEGER goo_type_id FK,UK
+        INTEGER id PK
+        INTEGER is_input UK
+        INTEGER smurf_id FK,UK
+    }
+
+    smurf_group {
+        INTEGER added_by FK
+        INTEGER id PK
+        INTEGER is_public
+        VARCHAR name UK
+    }
+
+    smurf_group_member {
+        INTEGER id PK
+        INTEGER smurf_group_id FK,UK
+        INTEGER smurf_id FK,UK
+    }
+
+    smurf_property {
+        VARCHAR calculated
+        INTEGER disabled
+        INTEGER id PK
+        INTEGER property_id FK,UK
+        INTEGER smurf_id FK,UK
+        INTEGER sort_order
+    }
+
+    submission {
+        TIMESTAMP added_on
+        INTEGER id PK
+        VARCHAR label
+        INTEGER submitter_id FK
+    }
+
+    submission_entry {
+        INTEGER assay_type_id FK
+        INTEGER id PK
+        INTEGER material_id FK
+        INTEGER prepped_by_id FK
+        VARCHAR(6) priority
+        VARCHAR(7) sample_type
+        VARCHAR(19) status
+        INTEGER submission_id FK
+        INTEGER themis_tray_id
+    }
+
+    tmp_messy_links {
+        VARCHAR desitnation_name
+        VARCHAR destination_transition
+        TEXT md5_hash PK
+        VARCHAR material_id
+        VARCHAR source_name
+        VARCHAR source_transition
+    }
+
+    transition_material {
+        VARCHAR material_id PK,FK
+        VARCHAR transition_id PK,FK
+    }
+
+    unit {
+        VARCHAR description
+        INTEGER dimension_id
+        DOUBLE_PRECISION factor
+        INTEGER id PK
+        VARCHAR name UK
+        DOUBLE_PRECISION offset
+    }
+
+    workflow {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        VARCHAR category
+        VARCHAR description
+        INTEGER disabled
+        INTEGER id PK
+        INTEGER manufacturer_id FK
+        VARCHAR name UK
+    }
+
+    workflow_attachment {
+        INTEGER added_by FK
+        TIMESTAMP added_on
+        BYTEA attachment
+        VARCHAR attachment_mime_type
+        VARCHAR attachment_name
+        INTEGER id PK
+        INTEGER workflow_id FK
+    }
+
+    workflow_section {
+        INTEGER id PK
+        VARCHAR name UK
+        INTEGER starting_step_id FK,UK
+        INTEGER workflow_id FK,UK
+    }
+
+    workflow_step {
+        DOUBLE_PRECISION RECIPE_FACTOR
+        INTEGER child_order
+        INTEGER class_id
+        INTEGER depth
+        VARCHAR description
+        INTEGER goo_amount_unit_id FK
+        INTEGER goo_type_id FK
+        INTEGER id PK
+        VARCHAR label
+        INTEGER left_id
+        VARCHAR name
+        INTEGER optional
+        INTEGER parent_id
+        INTEGER property_id FK
+        INTEGER right_id
+        INTEGER scope_id FK
+        INTEGER smurf_id FK
+    }
+
+    workflow_step_type {
+        INTEGER id PK
+        VARCHAR name UK
+    }
+
+    coa }o--|| goo_type : "goo_type_id"
+    coa_spec }o--|| coa : "coa_id"
+    coa_spec }o--|| property : "property_id"
+    container }o--|| container_type : "container_type_id"
+    container_history }o--|| container : "container_id"
+    fatsmurf }o--|| container : "container_id"
+    goo }o--|| container : "container_id"
+    material_inventory }o--|| container : "allocation_container_id"
+    material_inventory }o--|| container : "location_container_id"
+    robot_log_container_sequence }o--|| container : "container_id"
+    robot_run }o--|| container : "robot_id"
+    container_history }o--|| history : "history_id"
+    container_type_position }o--|| container_type : "child_container_type_id"
+    container_type_position }o--|| container_type : "parent_container_type_id"
+    robot_log_type }o--|| container_type : "destination_container_type_id"
+    field_map_display_type }o--|| display_layout : "display_layout_id"
+    field_map_display_type }o--|| display_type : "display_type_id"
+    external_goo_type }o--|| goo_type : "goo_type_id"
+    external_goo_type }o--|| manufacturer : "manufacturer_id"
+    fatsmurf }o--|| manufacturer : "organization_id"
+    fatsmurf }o--|| smurf : "smurf_id"
+    fatsmurf }o--|| workflow_step : "workflow_step_id"
+    material_transition }o--|| fatsmurf : "transition_id"
+    transition_material }o--|| fatsmurf : "transition_id"
+    fatsmurf_attachment }o--|| fatsmurf : "fatsmurf_id"
+    fatsmurf_comment }o--|| fatsmurf : "fatsmurf_id"
+    fatsmurf_history }o--|| fatsmurf : "fatsmurf_id"
+    fatsmurf_reading }o--|| fatsmurf : "fatsmurf_id"
+    fatsmurf_attachment }o--|| perseus_user : "added_by"
+    fatsmurf_comment }o--|| perseus_user : "added_by"
+    fatsmurf_history }o--|| history : "history_id"
+    fatsmurf_reading }o--|| perseus_user : "added_by"
+    poll }o--|| fatsmurf_reading : "fatsmurf_reading_id"
+    feed_type }o--|| perseus_user : "added_by"
+    feed_type }o--|| perseus_user : "updated_by_id"
+    recipe }o--|| feed_type : "feed_type_id"
+    field_map }o--|| field_map_block : "field_map_block_id"
+    field_map }o--|| field_map_set : "field_map_set_id"
+    field_map }o--|| field_map_type : "field_map_type_id"
+    field_map_display_type }o--|| field_map : "field_map_id"
+    field_map_display_type_user }o--|| perseus_user : "user_id"
+    goo }o--|| goo_type : "goo_type_id"
+    goo }o--|| manufacturer : "manufacturer_id"
+    goo }o--|| perseus_user : "added_by"
+    goo }o--|| recipe : "recipe_id"
+    goo }o--|| recipe_part : "recipe_part_id"
+    goo }o--|| workflow_step : "workflow_step_id"
+    goo_attachment }o--|| goo : "goo_id"
+    goo_comment }o--|| goo : "goo_id"
+    goo_history }o--|| goo : "goo_id"
+    material_inventory }o--|| goo : "material_id"
+    material_qc }o--|| goo : "material_id"
+    robot_log_read }o--|| goo : "source_material_id"
+    robot_log_transfer }o--|| goo : "destination_material_id"
+    robot_log_transfer }o--|| goo : "source_material_id"
+    submission_entry }o--|| goo : "material_id"
+    transition_material }o--|| goo : "material_id"
+    goo_attachment }o--|| goo_attachment_type : "goo_attachment_type_id"
+    goo_attachment }o--|| perseus_user : "added_by"
+    goo_comment }o--|| perseus_user : "added_by"
+    goo_history }o--|| history : "history_id"
+    goo_type_combine_component }o--|| goo_type : "goo_type_id"
+    goo_type_combine_target }o--|| goo_type : "goo_type_id"
+    material_inventory_threshold }o--|| goo_type : "material_type_id"
+    recipe }o--|| goo_type : "goo_type_id"
+    recipe_part }o--|| goo_type : "goo_type_id"
+    smurf_goo_type }o--|| goo_type : "goo_type_id"
+    workflow_step }o--|| goo_type : "goo_type_id"
+    goo_type_combine_component }o--|| goo_type_combine_target : "goo_type_combine_target_id"
+    history }o--|| history_type : "history_type_id"
+    history }o--|| perseus_user : "creator_id"
+    history_value }o--|| history : "history_id"
+    poll_history }o--|| history : "history_id"
+    perseus_user }o--|| manufacturer : "manufacturer_id"
+    workflow }o--|| manufacturer : "manufacturer_id"
+    material_inventory }o--|| perseus_user : "created_by_id"
+    material_inventory }o--|| perseus_user : "updated_by_id"
+    material_inventory }o--|| recipe : "recipe_id"
+    material_inventory }o--|| material_inventory_type : "inventory_type_id"
+    material_inventory_threshold }o--|| perseus_user : "created_by_id"
+    material_inventory_threshold }o--|| perseus_user : "updated_by_id"
+    material_inventory_threshold }o--|| material_inventory_type : "inventory_type_id"
+    material_inventory_threshold_notify_user }o--|| material_inventory_threshold : "threshold_id"
+    material_inventory_threshold_notify_user }o--|| perseus_user : "user_id"
+    recipe }o--|| perseus_user : "added_by"
+    saved_search }o--|| perseus_user : "added_by"
+    smurf_group }o--|| perseus_user : "added_by"
+    submission }o--|| perseus_user : "submitter_id"
+    submission_entry }o--|| perseus_user : "prepped_by_id"
+    workflow }o--|| perseus_user : "added_by"
+    workflow_attachment }o--|| perseus_user : "added_by"
+    poll }o--|| smurf_property : "smurf_property_id"
+    poll_history }o--|| poll : "poll_id"
+    property }o--|| unit : "unit_id"
+    property_option }o--|| property : "property_id"
+    robot_log_read }o--|| property : "property_id"
+    smurf_property }o--|| property : "property_id"
+    workflow_step }o--|| property : "property_id"
+    recipe }o--|| workflow : "workflow_id"
+    recipe_part }o--|| recipe : "part_recipe_id"
+    recipe_part }o--|| recipe : "recipe_id"
+    recipe_project_assignment }o--|| recipe : "recipe_id"
+    recipe_part }o--|| unit : "unit_id"
+    recipe_part }o--|| workflow_step : "workflow_step_id"
+    robot_log }o--|| robot_log_type : "robot_log_type_id"
+    robot_log }o--|| robot_run : "robot_run_id"
+    robot_log_container_sequence }o--|| robot_log : "robot_log_id"
+    robot_log_error }o--|| robot_log : "robot_log_id"
+    robot_log_read }o--|| robot_log : "robot_log_id"
+    robot_log_transfer }o--|| robot_log : "robot_log_id"
+    robot_log_container_sequence }o--|| sequence_type : "sequence_type_id"
+    smurf_goo_type }o--|| smurf : "smurf_id"
+    smurf_group_member }o--|| smurf : "smurf_id"
+    smurf_property }o--|| smurf : "smurf_id"
+    submission_entry }o--|| smurf : "assay_type_id"
+    workflow_step }o--|| smurf : "smurf_id"
+    smurf_group_member }o--|| smurf_group : "smurf_group_id"
+    submission_entry }o--|| submission : "submission_id"
+    workflow_step }o--|| unit : "goo_amount_unit_id"
+    workflow_attachment }o--|| workflow : "workflow_id"
+    workflow_section }o--|| workflow : "workflow_id"
+    workflow_step }o--|| workflow : "scope_id"
+    workflow_section }o--|| workflow_step : "starting_step_id"

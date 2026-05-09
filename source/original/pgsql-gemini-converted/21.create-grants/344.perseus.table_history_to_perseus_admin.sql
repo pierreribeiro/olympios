@@ -1,0 +1,2 @@
+GRANT ALL ON TABLE perseus.history TO perseus_admin;
+

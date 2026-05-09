@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.goo_type DROP CONSTRAINT IF EXISTS uq__goo_type__72e12f1b00551192;
+

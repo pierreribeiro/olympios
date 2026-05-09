@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.scraper DROP CONSTRAINT IF EXISTS pk__scraper__3214ec274c308081;
+

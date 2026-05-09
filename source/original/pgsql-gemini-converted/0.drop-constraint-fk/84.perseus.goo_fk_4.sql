@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.goo DROP CONSTRAINT IF EXISTS goo_fk_4;
+

@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.material_inventory_threshold_notify_user DROP CONSTRAINT IF EXISTS pk_material_inventory_threshold_notify_user;
+

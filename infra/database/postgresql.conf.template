@@ -1,0 +1,49 @@
+# =============================================================================
+#  postgresql.conf.template — Perseus PG18 development tuning
+# =============================================================================
+#  Placeholders {{VAR}} are substituted at init time by init-db.sh.
+#  All values originate from .env. NEVER hardcode here.
+# =============================================================================
+
+# --- Connection ---
+listen_addresses = 'localhost'
+port = {{PERSEUS_PG_PORT}}
+max_connections = {{PERSEUS_PG_MAX_CONNECTIONS}}
+
+# --- Memory ---
+shared_buffers = {{PERSEUS_PG_SHARED_BUFFERS}}
+work_mem = {{PERSEUS_PG_WORK_MEM}}
+maintenance_work_mem = {{PERSEUS_PG_MAINTENANCE_WORK_MEM}}
+effective_cache_size = {{PERSEUS_PG_EFFECTIVE_CACHE_SIZE}}
+
+# --- Storage / SSD optimization ---
+random_page_cost = {{PERSEUS_PG_RANDOM_PAGE_COST}}
+effective_io_concurrency = {{PERSEUS_PG_EFFECTIVE_IO_CONCURRENCY}}
+checkpoint_completion_target = {{PERSEUS_PG_CHECKPOINT_COMPLETION_TARGET}}
+
+# --- PG18 instant clone ---
+file_copy_method = {{PERSEUS_PG_FILE_COPY_METHOD}}
+
+# --- Locale ---
+timezone = '{{PERSEUS_PG_TIMEZONE}}'
+log_timezone = '{{PERSEUS_PG_TIMEZONE}}'
+
+# --- Logging ---
+log_destination = 'stderr'
+logging_collector = on
+log_directory = 'pg_log'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+log_rotation_age = 1d
+log_rotation_size = 100MB
+log_line_prefix = '%t [%p] %u@%d/%a from %h: '
+log_statement = 'ddl'
+log_min_duration_statement = 1000
+log_checkpoints = on
+log_connections = on
+log_disconnections = on
+
+# --- Required extensions to preload ---
+shared_preload_libraries = 'pg_stat_statements'
+
+# --- Parallel query (dev workload) ---
+max_parallel_workers_per_gather = 4

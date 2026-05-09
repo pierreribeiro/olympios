@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.recipe DROP CONSTRAINT IF EXISTS pk__recipe__3213e83f5d093d57;
+

@@ -1,0 +1,2 @@
+REVOKE SELECT,INSERT,DELETE,UPDATE ON TABLE perseus.recipe FROM perseus_user;
+

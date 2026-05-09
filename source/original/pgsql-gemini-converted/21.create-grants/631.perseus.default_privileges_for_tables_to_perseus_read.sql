@@ -1,0 +1,2 @@
+ALTER DEFAULT PRIVILEGES FOR ROLE perseus_owner IN SCHEMA perseus GRANT SELECT ON TABLES TO perseus_read;
+

@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.poll DROP CONSTRAINT IF EXISTS uq__poll__2edadb146383c8ba;
+

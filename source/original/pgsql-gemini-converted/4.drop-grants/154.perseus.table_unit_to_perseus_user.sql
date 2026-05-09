@@ -1,0 +1,2 @@
+REVOKE SELECT,INSERT,DELETE,UPDATE ON TABLE perseus.unit FROM perseus_user;
+

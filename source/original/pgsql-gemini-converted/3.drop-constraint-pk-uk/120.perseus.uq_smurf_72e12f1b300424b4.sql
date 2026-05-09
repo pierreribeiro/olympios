@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.smurf DROP CONSTRAINT IF EXISTS uq__smurf__72e12f1b300424b4;
+

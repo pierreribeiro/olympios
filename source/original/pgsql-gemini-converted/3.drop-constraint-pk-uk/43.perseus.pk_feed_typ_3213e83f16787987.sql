@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.feed_type DROP CONSTRAINT IF EXISTS pk__feed_typ__3213e83f16787987;
+

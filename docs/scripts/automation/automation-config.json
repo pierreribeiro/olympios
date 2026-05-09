@@ -1,0 +1,268 @@
+{
+  "project_info": {
+    "name": "SQL Server → PostgreSQL Migration",
+    "database": "Perseus",
+    "author": "Pierre Ribeiro",
+    "company": "DinamoTech"
+  },
+
+  "analyze_procedure": {
+    "description": "Configuration for analyze-procedure.py script",
+
+    "issue_patterns": {
+      "transaction_control": {
+        "patterns": [
+          "BEGIN TRAN",
+          "COMMIT TRAN",
+          "ROLLBACK TRAN",
+          "SAVE TRANSACTION"
+        ],
+        "severity": "P0",
+        "recommendation": "Convert to PostgreSQL transaction syntax (BEGIN, COMMIT, ROLLBACK)"
+      },
+
+      "raise_statements": {
+        "patterns": [
+          "RAISERROR",
+          "RAISE_APPLICATION_ERROR",
+          "THROW"
+        ],
+        "severity": "P0",
+        "recommendation": "Use RAISE EXCEPTION or RAISE NOTICE in PostgreSQL"
+      },
+
+      "temp_tables": {
+        "patterns": [
+          "#\\w+",
+          "##\\w+"
+        ],
+        "severity": "P1",
+        "recommendation": "Convert to CREATE TEMP TABLE or use WITH (CTE)"
+      },
+
+      "cursor_usage": {
+        "patterns": [
+          "DECLARE.*CURSOR",
+          "OPEN.*CURSOR",
+          "FETCH.*CURSOR",
+          "CLOSE.*CURSOR"
+        ],
+        "severity": "P1",
+        "recommendation": "Consider set-based operations instead of cursors"
+      },
+
+      "data_types": {
+        "patterns": [
+          "DATETIME",
+          "DATETIME2",
+          "UNIQUEIDENTIFIER",
+          "NVARCHAR\\(MAX\\)",
+          "IMAGE",
+          "MONEY"
+        ],
+        "severity": "P2",
+        "recommendation": "Convert to PostgreSQL data types (TIMESTAMP, UUID, TEXT, BYTEA, NUMERIC)"
+      },
+
+      "string_functions": {
+        "patterns": [
+          "ISNULL\\(",
+          "GETDATE\\(\\)",
+          "CHARINDEX\\(",
+          "STUFF\\(",
+          "PATINDEX\\("
+        ],
+        "severity": "P2",
+        "recommendation": "Use PostgreSQL equivalents (COALESCE, NOW(), POSITION, etc.)"
+      },
+
+      "dynamic_sql": {
+        "patterns": [
+          "EXEC\\s*\\(",
+          "EXECUTE\\s*\\(",
+          "sp_executesql"
+        ],
+        "severity": "P1",
+        "recommendation": "Review for SQL injection risks; use EXECUTE with USING clause"
+      },
+
+      "error_handling": {
+        "patterns": [
+          "TRY",
+          "CATCH",
+          "@@ERROR",
+          "ERROR_MESSAGE\\(\\)"
+        ],
+        "severity": "P1",
+        "recommendation": "Convert to PostgreSQL exception handling (EXCEPTION WHEN)"
+      }
+    },
+
+    "quality_weights": {
+      "description": "Weight multipliers for quality score calculation",
+      "p0_critical": -3.0,
+      "p1_high": -1.5,
+      "p2_medium": -0.5,
+      "p3_low": -0.1,
+      "base_score": 10.0,
+      "min_score": 0.0,
+      "passing_score": 7.0
+    },
+
+    "output_format": {
+      "style": "markdown",
+      "include_code_snippets": true,
+      "max_snippet_lines": 20,
+      "highlight_syntax": true,
+      "generate_summary": true,
+      "include_recommendations": true
+    }
+  },
+
+  "compare_versions": {
+    "description": "Configuration for compare-versions.py script",
+
+    "comparison_modes": {
+      "side_by_side": true,
+      "unified_diff": false,
+      "semantic_diff": true
+    },
+
+    "output_format": {
+      "html": {
+        "template": "comparison-template.html",
+        "syntax_highlighting": true,
+        "color_scheme": {
+          "removed": "#ffebe9",
+          "added": "#d1f4d1",
+          "modified": "#fff8c5"
+        }
+      },
+      "markdown": {
+        "enabled": true,
+        "include_stats": true
+      }
+    },
+
+    "ignore_patterns": {
+      "whitespace": true,
+      "comments": false,
+      "case_sensitivity": false
+    }
+  },
+
+  "extract_warnings": {
+    "description": "Configuration for extract-warnings.py script",
+
+    "warning_categories": {
+      "syntax": "P0",
+      "transaction": "P0",
+      "data_type": "P2",
+      "performance": "P1",
+      "function": "P2",
+      "security": "P0"
+    },
+
+    "output_format": {
+      "csv": {
+        "enabled": true,
+        "include_headers": true,
+        "delimiter": ","
+      },
+      "json": {
+        "enabled": true,
+        "pretty_print": true
+      }
+    },
+
+    "filters": {
+      "min_severity": "P3",
+      "exclude_informational": false,
+      "group_by_procedure": true
+    }
+  },
+
+  "generate_tests": {
+    "description": "Configuration for generate-tests.py script",
+
+    "framework": "pgTAP",
+    "alternative_frameworks": [
+      "pgtap",
+      "custom",
+      "pytest"
+    ],
+
+    "test_types": {
+      "happy_path": {
+        "enabled": true,
+        "description": "Normal operation with valid inputs"
+      },
+      "null_params": {
+        "enabled": true,
+        "description": "Test NULL parameter handling"
+      },
+      "edge_cases": {
+        "enabled": true,
+        "description": "Boundary values, empty strings, extreme numbers"
+      },
+      "error_handling": {
+        "enabled": true,
+        "description": "Expected error conditions and exceptions"
+      },
+      "performance": {
+        "enabled": true,
+        "description": "Baseline performance benchmarks"
+      },
+      "data_integrity": {
+        "enabled": true,
+        "description": "Verify data consistency and constraints"
+      }
+    },
+
+    "test_data_generation": {
+      "auto_generate_fixtures": true,
+      "sample_size": 10,
+      "include_negative_cases": true,
+      "randomize_data": false
+    },
+
+    "output_options": {
+      "file_naming": "test_{procedure_name}.sql",
+      "include_setup_teardown": true,
+      "include_documentation": true,
+      "verbose_output": true
+    }
+  },
+
+  "batch_processing": {
+    "description": "Configuration for batch automation scripts",
+
+    "concurrency": {
+      "max_workers": 4,
+      "timeout_seconds": 300
+    },
+
+    "error_handling": {
+      "stop_on_first_error": false,
+      "log_errors": true,
+      "retry_failed": true,
+      "max_retries": 3
+    },
+
+    "logging": {
+      "level": "INFO",
+      "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+      "log_file": "logs/automation.log"
+    }
+  },
+
+  "paths": {
+    "description": "Default directory paths",
+    "original": "procedures/original",
+    "converted": "procedures/aws-sct-converted",
+    "corrected": "procedures/corrected",
+    "analysis": "procedures/analysis",
+    "tests": "tests/unit",
+    "logs": "logs"
+  }
+}

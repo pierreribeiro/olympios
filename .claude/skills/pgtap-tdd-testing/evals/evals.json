@@ -1,0 +1,50 @@
+{
+  "skill_name": "pgtap-tdd-testing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a PostgreSQL function calculate_order_total(order_id integer) that returns numeric. It should sum line_items.price * line_items.quantity for the order, and return 0 if the order has no items. Write me a pgTAP test file for it following TDD.",
+      "expected_output": "A complete .sql test file using BEGIN/SELECT plan(N)/SELECT * FROM finish()/ROLLBACK structure with sections for existence (has_function, function_returns), happy path (is/results_eq), edge case (zero items returns 0), and at least one error/NULL behavior assertion. Test must be wrapped in a transaction and rolled back.",
+      "expectations": [
+        "The skill SKILL.md was read",
+        "The output is a complete .sql file with a BEGIN ... ROLLBACK transaction",
+        "SELECT plan(N) appears with N matching the actual count of test assertions",
+        "SELECT * FROM finish() appears before ROLLBACK",
+        "has_function() and function_returns() are used to verify structure",
+        "is() or results_eq() is used to verify the happy path returns the correct sum",
+        "An assertion checks the zero-items edge case returns 0",
+        "NULL handling for the order_id argument is addressed (either via is() with NULL or noted in a comment)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We have an audit_log trigger called trg_users_audit on the users table. It should fire AFTER UPDATE and insert a row into audit_log capturing the old and new email. It should NOT fire on INSERT or DELETE. Write a pgTAP test that verifies this behavior.",
+      "expected_output": "A .sql file that verifies the trigger exists (has_trigger / trigger_is), then exercises the trigger by performing an UPDATE and asserting audit_log received exactly one row with correct old/new values, plus negative-case assertions confirming INSERT and DELETE do NOT produce audit_log rows.",
+      "expectations": [
+        "The skill SKILL.md was read",
+        "object-recipes.md was read for the trigger recipe",
+        "has_trigger() verifies the trigger is attached to the users table",
+        "trigger_is() verifies the trigger calls the expected function",
+        "An UPDATE is performed and an assertion (results_eq, is, or row_eq) verifies the audit_log entry",
+        "A negative test confirms INSERT does not produce audit_log rows (is_empty or similar)",
+        "A negative test confirms DELETE does not produce audit_log rows",
+        "The test runs inside BEGIN ... ROLLBACK"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I have a posts table with an RLS policy posts_owner_select that should let authenticated users read only their own rows (where user_id = current_setting('app.user_id')::int). Help me write a pgTAP test that proves this policy works — including that other users can't see the post.",
+      "expected_output": "A .sql test file using SET LOCAL ROLE (or SET LOCAL app.user_id) to switch identities, with assertions for: (a) the policy exists (policies_are or similar), (b) the row owner can SELECT their row, (c) a different user gets is_empty when selecting the same row, (d) SECURITY note about superusers bypassing RLS.",
+      "expectations": [
+        "The skill SKILL.md was read",
+        "advanced-patterns.md was read for the RLS pattern",
+        "policies_are() or has_policy/policy_cmd_is is used to verify the policy exists",
+        "SET LOCAL is used to change identity within the test transaction",
+        "An is_empty() (or set_eq with empty result) assertion verifies the OTHER user cannot see the row",
+        "An assertion verifies the OWNER can see their own row",
+        "The test acknowledges that superusers bypass RLS (via comment, NOTICE, or by not running as superuser)",
+        "The test runs inside BEGIN ... ROLLBACK"
+      ]
+    }
+  ]
+}

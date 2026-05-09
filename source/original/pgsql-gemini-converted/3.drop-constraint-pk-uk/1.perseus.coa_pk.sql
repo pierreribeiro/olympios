@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.coa DROP CONSTRAINT IF EXISTS coa_pk;
+

@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.material_inventory_threshold DROP CONSTRAINT IF EXISTS uq_material_inventory_threshold_material_type_inventory_type;
+

@@ -1,0 +1,59 @@
+{
+  "skill_name": "tdd-database-development",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "You are a sub-agent assigned the RED role for a database TDD cycle. Engine: PostgreSQL 16. Behavior to test: 'the function calculate_order_total returns 0 when the order has no line items'. Write the failing test following the TDD discipline. Identify the engine-specific TDD skill to use and explain how you would write the test.",
+      "expected_output": "The agent reads SKILL.md, then loads role-red-test-writer.md, aaa-pattern-database.md, and engine-skill-discovery.md. It writes a plan using role-plan-template.md before writing the test. It identifies pgtap-tdd-testing as the engine-specific skill for PostgreSQL. It produces a test in AAA structure (Arrange/Act/Assert) for the degenerate empty-order case. It commits to running the test to confirm it fails for the right reason and writing a report afterwards.",
+      "expectations": [
+        "The skill SKILL.md is loaded first (router-first discipline)",
+        "The role file references/role-red-test-writer.md is loaded for role context",
+        "The references/aaa-pattern-database.md is loaded or its AAA structure is followed",
+        "The references/engine-skill-discovery.md is consulted to identify the engine-specific skill",
+        "The agent identifies pgtap-tdd-testing (or equivalent PostgreSQL engine skill) as the engine-specific TDD skill to load",
+        "A plan is written using assets/templates/role-plan-template.md BEFORE any test code is produced",
+        "The proposed test follows the Arrange-Act-Assert pseudo-code structure with explicitly labeled phases",
+        "The proposed test targets the degenerate (empty order) case per baby-steps discipline",
+        "The agent commits to confirming the test fails for the right reason, not a typo or connection error",
+        "The agent commits to writing a report using assets/templates/role-report-template.md after the work",
+        "The agent does NOT write production code (no CREATE FUNCTION, no implementation) in the RED phase"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "You are a sub-agent assigned the GREEN role for a database TDD cycle. Engine: Oracle 23ai. The RED sub-agent has produced a failing test that asserts: 'when an INSERT into the orders table happens, an audit row appears in the audit_log table with old_value NULL and the new total'. Write the minimum production code to make the test pass and explain your approach.",
+      "expected_output": "The agent reads SKILL.md, then loads role-green-implementer.md, database-patterns.md, and engine-skill-discovery.md. It identifies utPLSQL (or equivalent Oracle skill) as the engine-specific TDD skill. It writes a plan using role-plan-template.md before producing code. It chooses the simplest implementation: a minimal AFTER INSERT trigger producing exactly the audit row asserted. It commits to running the FULL test suite (not just the new test) and writing a report. It explicitly defers any 'while I'm here' additions per YAGNI.",
+      "expectations": [
+        "The skill SKILL.md is loaded first",
+        "The role file references/role-green-implementer.md is loaded for role context",
+        "The references/database-patterns.md is consulted for the declarative-first hierarchy",
+        "The agent identifies utPLSQL (or equivalent Oracle engine skill) as the engine-specific skill to load",
+        "A plan is written using assets/templates/role-plan-template.md BEFORE any implementation code",
+        "The proposed implementation is the MINIMUM needed to pass the one failing test (no extra columns, indexes, parameters, branches)",
+        "The agent commits to running the FULL test suite, not just the new test",
+        "The agent explicitly lists what is being DEFERRED per YAGNI (anti-engineering guard rail)",
+        "The agent commits to writing a report using assets/templates/role-report-template.md",
+        "The agent does NOT modify any existing test to make the new test pass",
+        "The agent reaches for declarative constructs first per references/database-patterns.md (e.g., trigger only because the side-effect crosses tables — not a CHECK or DEFAULT use case)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "You are a sub-agent assigned the REFACTOR role for a database TDD cycle. Engine: PostgreSQL 16. The GREEN sub-agent has produced this implementation: a function calculate_order_total(order_id) that uses a 30-line PL/pgSQL FOR-loop summing prices. All tests pass. Evaluate whether to refactor and explain your decision process.",
+      "expected_output": "The agent reads SKILL.md, then loads role-refactor-refactorer.md and refactor-checklist.md. It writes a plan using role-plan-template.md listing refactoring opportunities. It identifies that the imperative loop can be replaced with a set-based SUM() query (database-patterns.md, section 2.4 set-based not row-by-row). It applies the change as a single atomic refactor, runs the full suite to confirm green, and writes a report. Alternatively, if no opportunity is clearly behavior-preserving and low-risk, it returns 'no refactoring needed' with reasoning. Either outcome is valid as long as the suite is run at the end.",
+      "expectations": [
+        "The skill SKILL.md is loaded first",
+        "The role file references/role-refactor-refactorer.md is loaded for role context",
+        "The assets/templates/refactor-checklist.md is consulted as a decision aid",
+        "A plan is written using assets/templates/role-plan-template.md BEFORE applying any change",
+        "The plan lists refactoring opportunities considered (or explicitly states 'no opportunities found, with reasons')",
+        "If a refactor is applied: the imperative FOR-loop is replaced with set-based SQL per references/database-patterns.md section 2.4",
+        "Each refactor change is followed by a FULL test-suite run, not just the new test",
+        "The agent does NOT introduce new behavior (no new column, parameter, branch, index)",
+        "The agent does NOT weaken or delete any test to make a refactor pass",
+        "The agent runs the full suite at the end EVEN IF no change was applied (proof of green hand-off)",
+        "The agent writes a report using assets/templates/role-report-template.md, recording either the changes applied or 'no refactoring needed' with reasoning"
+      ]
+    }
+  ]
+}

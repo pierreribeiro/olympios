@@ -1,0 +1,2 @@
+GRANT SELECT ON SEQUENCE perseus.field_map_block_id_seq TO perseus_read;
+

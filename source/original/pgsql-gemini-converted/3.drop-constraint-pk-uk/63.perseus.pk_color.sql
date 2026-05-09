@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.color DROP CONSTRAINT IF EXISTS pk_color;
+

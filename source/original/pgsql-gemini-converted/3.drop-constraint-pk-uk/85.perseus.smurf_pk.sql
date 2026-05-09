@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.smurf DROP CONSTRAINT IF EXISTS smurf_pk;
+

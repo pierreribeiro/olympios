@@ -1,0 +1,7 @@
+# Example batch comparison file
+# Format: object_type object_name (one per line)
+# Lines starting with # are comments
+
+procedure addarc
+procedure removearc
+procedure movecontainer

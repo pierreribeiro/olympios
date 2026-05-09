@@ -1,0 +1,2 @@
+ALTER TABLE ONLY perseus.unit DROP CONSTRAINT IF EXISTS unit_pk;
+

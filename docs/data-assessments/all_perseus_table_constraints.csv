@@ -1,0 +1,260 @@
+﻿alembic_version_pkc;perseus;dbo;alembic_version;PRIMARY KEY;NO;NO
+PK_cm_application;perseus;dbo;cm_application;PRIMARY KEY;NO;NO
+PK_cm_application_group;perseus;dbo;cm_application_group;PRIMARY KEY;NO;NO
+PK_group;perseus;dbo;cm_group;PRIMARY KEY;NO;NO
+PK_project;perseus;dbo;cm_project;PRIMARY KEY;NO;NO
+PK_cm_unit_1;perseus;dbo;cm_unit;PRIMARY KEY;NO;NO
+PK_cm_unit_compare;perseus;dbo;cm_unit_compare;PRIMARY KEY;NO;NO
+PK_cm_unit_dimensions;perseus;dbo;cm_unit_dimensions;PRIMARY KEY;NO;NO
+PK_user;perseus;dbo;cm_user;PRIMARY KEY;NO;NO
+PK_cm_user_group;perseus;dbo;cm_user_group;PRIMARY KEY;NO;NO
+coa_FK_1;perseus;dbo;coa;FOREIGN KEY;NO;NO
+coa_PK;perseus;dbo;coa;PRIMARY KEY;NO;NO
+UQ__coa__A045441B2653CAA4;perseus;dbo;coa;UNIQUE;NO;NO
+coa_spec_FK_1;perseus;dbo;coa_spec;FOREIGN KEY;NO;NO
+coa_spec_FK_2;perseus;dbo;coa_spec;FOREIGN KEY;NO;NO
+coa_spec_PK;perseus;dbo;coa_spec;PRIMARY KEY;NO;NO
+UQ__coa_spec__175EAF262C0CA3FA;perseus;dbo;coa_spec;UNIQUE;NO;NO
+PK_color;perseus;dbo;color;PRIMARY KEY;NO;NO
+container_FK_1;perseus;dbo;container;FOREIGN KEY;NO;NO
+container_PK;perseus;dbo;container;PRIMARY KEY;NO;NO
+container_history_FK_1;perseus;dbo;container_history;FOREIGN KEY;NO;NO
+container_history_FK_2;perseus;dbo;container_history;FOREIGN KEY;NO;NO
+container_history_PK;perseus;dbo;container_history;PRIMARY KEY;NO;NO
+container_type_PK;perseus;dbo;container_type;PRIMARY KEY;NO;NO
+UQ__containe__72E12F1B0EA330E9;perseus;dbo;container_type;UNIQUE;NO;NO
+container_type_position_FK_1;perseus;dbo;container_type_position;FOREIGN KEY;NO;NO
+container_type_position_FK_2;perseus;dbo;container_type_position;FOREIGN KEY;NO;NO
+container_type_position_PK;perseus;dbo;container_type_position;PRIMARY KEY;NO;NO
+UQ__containe__32B36F0E29F6A937;perseus;dbo;container_type_position;UNIQUE;NO;NO
+display_layout_PK;perseus;dbo;display_layout;PRIMARY KEY;NO;NO
+UQ__display___72E12F1B22C0CEDD;perseus;dbo;display_layout;UNIQUE;NO;NO
+display_type_PK;perseus;dbo;display_type;PRIMARY KEY;NO;NO
+UQ__display___72E12F1B1DFC19C0;perseus;dbo;display_type;UNIQUE;NO;NO
+external_goo_type_FK_1;perseus;dbo;external_goo_type;FOREIGN KEY;NO;NO
+external_goo_type_FK_2;perseus;dbo;external_goo_type;FOREIGN KEY;NO;NO
+external_goo_type_PK;perseus;dbo;external_goo_type;PRIMARY KEY;NO;NO
+UQ__external__3B82AF230B9FD468;perseus;dbo;external_goo_type;UNIQUE;NO;NO
+fk_fatsmurf_smurf_id;perseus;dbo;fatsmurf;FOREIGN KEY;NO;NO
+FK_fatsmurf_workflow_step;perseus;dbo;fatsmurf;FOREIGN KEY;NO;NO
+fs_container_id_FK_1;perseus;dbo;fatsmurf;FOREIGN KEY;NO;NO
+fs_organization_FK_1;perseus;dbo;fatsmurf;FOREIGN KEY;NO;NO
+fatsmurf_PK;perseus;dbo;fatsmurf;PRIMARY KEY;NO;NO
+fatsmurf_attachment_FK_1;perseus;dbo;fatsmurf_attachment;FOREIGN KEY;NO;NO
+fatsmurf_attachment_FK_2;perseus;dbo;fatsmurf_attachment;FOREIGN KEY;NO;NO
+fatsmurf_attachment_PK;perseus;dbo;fatsmurf_attachment;PRIMARY KEY;NO;NO
+fatsmurf_comment_FK_1;perseus;dbo;fatsmurf_comment;FOREIGN KEY;NO;NO
+fatsmurf_comment_FK_2;perseus;dbo;fatsmurf_comment;FOREIGN KEY;NO;NO
+fatsmurf_comment_PK;perseus;dbo;fatsmurf_comment;PRIMARY KEY;NO;NO
+fatsmurf_history_FK_1;perseus;dbo;fatsmurf_history;FOREIGN KEY;NO;NO
+fatsmurf_history_FK_2;perseus;dbo;fatsmurf_history;FOREIGN KEY;NO;NO
+fatsmurf_history_PK;perseus;dbo;fatsmurf_history;PRIMARY KEY;NO;NO
+creator_FK_1;perseus;dbo;fatsmurf_reading;FOREIGN KEY;NO;NO
+fatsmurf_reading_FK_1;perseus;dbo;fatsmurf_reading;FOREIGN KEY;NO;NO
+fatsmurf_reading_PK;perseus;dbo;fatsmurf_reading;PRIMARY KEY;NO;NO
+UQ__fatsmurf__0BC798795AFC9D0D;perseus;dbo;fatsmurf_reading;UNIQUE;NO;NO
+FK__feed_type__creat__5F28586B;perseus;dbo;feed_type;FOREIGN KEY;NO;NO
+FK__feed_type__updat__601C7CA4;perseus;dbo;feed_type;FOREIGN KEY;NO;NO
+PK__feed_typ__3213E83F16787987;perseus;dbo;feed_type;PRIMARY KEY;NO;NO
+combined_field_map_FK_1;perseus;dbo;field_map;FOREIGN KEY;NO;NO
+combined_field_map_FK_2;perseus;dbo;field_map;FOREIGN KEY;NO;NO
+field_map_field_map_set_FK_1;perseus;dbo;field_map;FOREIGN KEY;NO;NO
+combined_field_map_PK;perseus;dbo;field_map;PRIMARY KEY;NO;NO
+field_map_block_PK;perseus;dbo;field_map_block;PRIMARY KEY;NO;NO
+uniq_fmb;perseus;dbo;field_map_block;UNIQUE;NO;NO
+combined_field_map_display_type_FK_1;perseus;dbo;field_map_display_type;FOREIGN KEY;NO;NO
+combined_field_map_display_type_FK_2;perseus;dbo;field_map_display_type;FOREIGN KEY;NO;NO
+combined_field_map_display_type_FK_3;perseus;dbo;field_map_display_type;FOREIGN KEY;NO;NO
+combined_field_map_display_type_PK;perseus;dbo;field_map_display_type;PRIMARY KEY;NO;NO
+UQ__field_ma__F9589110301AC9FB;perseus;dbo;field_map_display_type;UNIQUE;NO;NO
+field_map_display_type_user_FK_2;perseus;dbo;field_map_display_type_user;FOREIGN KEY;NO;NO
+field_map_display_type_user_PK;perseus;dbo;field_map_display_type_user;PRIMARY KEY;NO;NO
+UQ__field_ma__49E1A26338B00FFC;perseus;dbo;field_map_display_type_user;UNIQUE;NO;NO
+field_map_set_PK;perseus;dbo;field_map_set;PRIMARY KEY;NO;NO
+field_map_type_PK;perseus;dbo;field_map_type;PRIMARY KEY;NO;NO
+UQ__field_ma__72E12F1B278583FA;perseus;dbo;field_map_type;UNIQUE;NO;NO
+container_id_FK_1;perseus;dbo;goo;FOREIGN KEY;NO;NO
+fk_goo_recipe;perseus;dbo;goo;FOREIGN KEY;NO;NO
+fk_goo_recipe_part;perseus;dbo;goo;FOREIGN KEY;NO;NO
+FK_goo_workflow_step;perseus;dbo;goo;FOREIGN KEY;NO;NO
+goo_FK_1;perseus;dbo;goo;FOREIGN KEY;NO;NO
+goo_FK_4;perseus;dbo;goo;FOREIGN KEY;NO;NO
+manufacturer_FK_1;perseus;dbo;goo;FOREIGN KEY;NO;NO
+goo_PK;perseus;dbo;goo;PRIMARY KEY;NO;NO
+goo_attachment_FK_1;perseus;dbo;goo_attachment;FOREIGN KEY;NO;NO
+goo_attachment_FK_2;perseus;dbo;goo_attachment;FOREIGN KEY;NO;NO
+goo_attachment_FK_3;perseus;dbo;goo_attachment;FOREIGN KEY;NO;NO
+goo_attachment_PK;perseus;dbo;goo_attachment;PRIMARY KEY;NO;NO
+goo_attachment_type_PK;perseus;dbo;goo_attachment_type;PRIMARY KEY;NO;NO
+UQ__goo_atta__72E12F1B7A5D7005;perseus;dbo;goo_attachment_type;UNIQUE;NO;NO
+goo_comment_FK_1;perseus;dbo;goo_comment;FOREIGN KEY;NO;NO
+goo_comment_FK_2;perseus;dbo;goo_comment;FOREIGN KEY;NO;NO
+goo_comment_PK;perseus;dbo;goo_comment;PRIMARY KEY;NO;NO
+goo_history_FK_1;perseus;dbo;goo_history;FOREIGN KEY;NO;NO
+goo_history_FK_2;perseus;dbo;goo_history;FOREIGN KEY;NO;NO
+goo_history_PK;perseus;dbo;goo_history;PRIMARY KEY;NO;NO
+goo_process_queue_type_PK;perseus;dbo;goo_process_queue_type;PRIMARY KEY;NO;NO
+UQ__goo_proc__72E12F1B5581BC68;perseus;dbo;goo_process_queue_type;UNIQUE;NO;NO
+goo_type_PK;perseus;dbo;goo_type;PRIMARY KEY;NO;NO
+UQ__goo_type__72A9F59B39237A9A;perseus;dbo;goo_type;UNIQUE;NO;NO
+UQ__goo_type__72E12F1B00551192;perseus;dbo;goo_type;UNIQUE;NO;NO
+goo_type_combine_component_FK_1;perseus;dbo;goo_type_combine_component;FOREIGN KEY;NO;NO
+goo_type_combine_component_FK_2;perseus;dbo;goo_type_combine_component;FOREIGN KEY;NO;NO
+goo_type_combine_component_PK;perseus;dbo;goo_type_combine_component;PRIMARY KEY;NO;NO
+UQ__goo_type__1A28C1A56FC0B158;perseus;dbo;goo_type_combine_component;UNIQUE;NO;NO
+goo_type_combine_target_FK_1;perseus;dbo;goo_type_combine_target;FOREIGN KEY;NO;NO
+goo_type_combine_target_PK;perseus;dbo;goo_type_combine_target;PRIMARY KEY;NO;NO
+history_FK_1;perseus;dbo;history;FOREIGN KEY;NO;NO
+history_FK_2;perseus;dbo;history;FOREIGN KEY;NO;NO
+history_PK;perseus;dbo;history;PRIMARY KEY;NO;NO
+history_type_PK;perseus;dbo;history_type;PRIMARY KEY;NO;NO
+UQ__history___72E12F1B19B8E995;perseus;dbo;history_type;UNIQUE;NO;NO
+history_value_FK_1;perseus;dbo;history_value;FOREIGN KEY;NO;NO
+history_value_PK;perseus;dbo;history_value;PRIMARY KEY;NO;NO
+m_downstream_PK;perseus;dbo;m_downstream;PRIMARY KEY;NO;NO
+m_upstream_PK;perseus;dbo;m_upstream;PRIMARY KEY;NO;NO
+manufacturer_PK;perseus;dbo;manufacturer;PRIMARY KEY;NO;NO
+UQ__manufact__106262313DE82FB7;perseus;dbo;manufacturer;UNIQUE;NO;NO
+FK__material___alloc__1642B7D4;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+FK__material___creat__1A1348B8;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+FK__material___locat__191F247F;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+FK__material___mater__182B0046;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+FK__material___recip__1736DC0D;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+FK__material___updat__1B076CF1;perseus;dbo;material_inventory;FOREIGN KEY;NO;NO
+PK__material__3213E83F77F9310A;perseus;dbo;material_inventory;PRIMARY KEY;NO;NO
+UQ__material__6BFE1D29C2C4DDAB;perseus;dbo;material_inventory;UNIQUE;NO;NO
+FK_material_inventory_threshold_created_by;perseus;dbo;material_inventory_threshold;FOREIGN KEY;NO;NO
+FK_material_inventory_threshold_material_type;perseus;dbo;material_inventory_threshold;FOREIGN KEY;NO;NO
+FK_material_inventory_threshold_updated_by;perseus;dbo;material_inventory_threshold;FOREIGN KEY;NO;NO
+PK__material__3213E83FF1F867F5;perseus;dbo;material_inventory_threshold;PRIMARY KEY;NO;NO
+UQ_material_inventory_threshold_material_type;perseus;dbo;material_inventory_threshold;UNIQUE;NO;NO
+FK_mit_notify_user_threshold;perseus;dbo;material_inventory_threshold_notify_user;FOREIGN KEY;NO;NO
+FK_mit_notify_user_user;perseus;dbo;material_inventory_threshold_notify_user;FOREIGN KEY;NO;NO
+PK_material_inventory_threshold_notify_user;perseus;dbo;material_inventory_threshold_notify_user;PRIMARY KEY;NO;NO
+FK__material___mater__5B988A00;perseus;dbo;material_qc;FOREIGN KEY;NO;NO
+PK__material__3213E83FE6B39CC1;perseus;dbo;material_qc;PRIMARY KEY;NO;NO
+FK_material_transition_fatsmurf;perseus;dbo;material_transition;FOREIGN KEY;NO;NO
+FK_material_transition_goo;perseus;dbo;material_transition;FOREIGN KEY;NO;NO
+PK__material__78FCFD7E69FEE97B;perseus;dbo;material_transition;PRIMARY KEY;NO;NO
+PK__migratio__3213E83F2405CA25;perseus;dbo;migration;PRIMARY KEY;NO;NO
+PK__MSpeer_c__3213E83FB38C465C;perseus;dbo;MSpeer_conflictdetectionconfigrequest;PRIMARY KEY;NO;NO
+PK__MSpeer_l__3213E83E088F66BA;perseus;dbo;MSpeer_lsns;PRIMARY KEY;NO;NO
+FK__perseus_u__manuf__5B3C942F;perseus;dbo;perseus_user;FOREIGN KEY;NO;NO
+FK__perseus_u__manuf__5E1900DA;perseus;dbo;perseus_user;FOREIGN KEY;NO;NO
+FK__perseus_u__manuf__6001494C;perseus;dbo;perseus_user;FOREIGN KEY;NO;NO
+perseus_user_PK;perseus;dbo;perseus_user;PRIMARY KEY;NO;NO
+UQ__perseus___7838F2720519C6AF;perseus;dbo;perseus_user;UNIQUE;NO;NO
+UQ__perseus___E72BC76707F6335A;perseus;dbo;perseus_user;UNIQUE;NO;NO
+PK__person__3213E83F19AFF6DF;perseus;dbo;person;PRIMARY KEY;NO;NO
+uq_person_domain_id;perseus;dbo;person;UNIQUE;NO;NO
+poll_fatsmurf_reading_FK_1;perseus;dbo;poll;FOREIGN KEY;NO;NO
+poll_smurf_property_FK_1;perseus;dbo;poll;FOREIGN KEY;NO;NO
+poll_PK;perseus;dbo;poll;PRIMARY KEY;NO;NO
+UQ__poll__2EDADB146383C8BA;perseus;dbo;poll;UNIQUE;NO;NO
+poll_history_FK_1;perseus;dbo;poll_history;FOREIGN KEY;NO;NO
+poll_history_FK_2;perseus;dbo;poll_history;FOREIGN KEY;NO;NO
+poll_history_PK;perseus;dbo;poll_history;PRIMARY KEY;NO;NO
+prefix_incrementor_PK;perseus;dbo;prefix_incrementor;PRIMARY KEY;NO;NO
+PK__Procedur__5E5499A844BEFA55;perseus;dbo;ProcedureExecutionLog;PRIMARY KEY;NO;NO
+property_FK_1;perseus;dbo;property;FOREIGN KEY;NO;NO
+property_PK;perseus;dbo;property;PRIMARY KEY;NO;NO
+UQ__property__1FDBDAA62A4B4B5E;perseus;dbo;property;UNIQUE;NO;NO
+property_option_FK_1;perseus;dbo;property_option;FOREIGN KEY;NO;NO
+property_option_PK;perseus;dbo;property_option;PRIMARY KEY;NO;NO
+UQ__property__57D99BB95267570C;perseus;dbo;property_option;UNIQUE;NO;NO
+UQ__property__D7501AC15543C3B7;perseus;dbo;property_option;UNIQUE;NO;NO
+FK__recipe__added_by__659E8358;perseus;dbo;recipe;FOREIGN KEY;NO;NO
+FK__recipe__feed_typ__471BC4B0;perseus;dbo;recipe;FOREIGN KEY;NO;NO
+FK__recipe__goo_type__6692A791;perseus;dbo;recipe;FOREIGN KEY;NO;NO
+FK__recipe__workflow__64AA5F1F;perseus;dbo;recipe;FOREIGN KEY;NO;NO
+PK__recipe__3213E83F5D093D57;perseus;dbo;recipe;PRIMARY KEY;NO;NO
+UQ__recipe__72E12F1B5FE5AA02;perseus;dbo;recipe;UNIQUE;NO;NO
+UQ__recipe__72E12F1B62C216AD;perseus;dbo;recipe;UNIQUE;NO;NO
+FK__recipe_pa__goo_t__6E33C959;perseus;dbo;recipe_part;FOREIGN KEY;NO;NO
+FK__recipe_pa__part___083EB140;perseus;dbo;recipe_part;FOREIGN KEY;NO;NO
+FK__recipe_pa__recip__6D3FA520;perseus;dbo;recipe_part;FOREIGN KEY;NO;NO
+FK__recipe_pa__unit___6B575CAE;perseus;dbo;recipe_part;FOREIGN KEY;NO;NO
+FK__recipe_pa__workf__6C4B80E7;perseus;dbo;recipe_part;FOREIGN KEY;NO;NO
+PK__recipe_p__3213E83F696F143C;perseus;dbo;recipe_part;PRIMARY KEY;NO;NO
+FK__recipe_pr__recip__0D5F605D;perseus;dbo;recipe_project_assignment;FOREIGN KEY;NO;NO
+FK__robot_log__robot__01BF6602;perseus;dbo;robot_log;FOREIGN KEY;NO;NO
+robot_log_FK_1;perseus;dbo;robot_log;FOREIGN KEY;NO;NO
+robot_log_PK;perseus;dbo;robot_log;PRIMARY KEY;NO;NO
+robot_log_container_sequence_FK_1;perseus;dbo;robot_log_container_sequence;FOREIGN KEY;NO;NO
+robot_log_container_sequence_FK_2;perseus;dbo;robot_log_container_sequence;FOREIGN KEY;NO;NO
+robot_log_container_sequence_FK_3;perseus;dbo;robot_log_container_sequence;FOREIGN KEY;NO;NO
+robot_log_container_sequence_PK;perseus;dbo;robot_log_container_sequence;PRIMARY KEY;NO;NO
+UQ__robot_lo__ACCA81E32E521557;perseus;dbo;robot_log_container_sequence;UNIQUE;NO;NO
+robot_log_error_FK_1;perseus;dbo;robot_log_error;FOREIGN KEY;NO;NO
+robot_log_error_PK;perseus;dbo;robot_log_error;PRIMARY KEY;NO;NO
+FK_robot_log_read_source_material_id;perseus;dbo;robot_log_read;FOREIGN KEY;NO;NO
+robot_log_read_FK_1;perseus;dbo;robot_log_read;FOREIGN KEY;NO;NO
+robot_log_read_FK_2;perseus;dbo;robot_log_read;FOREIGN KEY;NO;NO
+robot_log_read_PK;perseus;dbo;robot_log_read;PRIMARY KEY;NO;NO
+FK_robot_log_transfer_destination_material_id;perseus;dbo;robot_log_transfer;FOREIGN KEY;NO;NO
+FK_robot_log_transfer_source_material_id;perseus;dbo;robot_log_transfer;FOREIGN KEY;NO;NO
+robot_log_transfer_FK_1;perseus;dbo;robot_log_transfer;FOREIGN KEY;NO;NO
+robot_log_transfer_PK;perseus;dbo;robot_log_transfer;PRIMARY KEY;NO;NO
+robot_log_type_FK_1;perseus;dbo;robot_log_type;FOREIGN KEY;NO;NO
+robot_log_type_PK;perseus;dbo;robot_log_type;PRIMARY KEY;NO;NO
+UQ__robot_lo__72E12F1B1956F871;perseus;dbo;robot_log_type;UNIQUE;NO;NO
+robot_run_FK_2;perseus;dbo;robot_run;FOREIGN KEY;NO;NO
+robot_run_PK;perseus;dbo;robot_run;PRIMARY KEY;NO;NO
+saved_search_FK_1;perseus;dbo;saved_search;FOREIGN KEY;NO;NO
+saved_search_PK;perseus;dbo;saved_search;PRIMARY KEY;NO;NO
+UQ__saved_se__A00062956A30C649;perseus;dbo;saved_search;UNIQUE;NO;NO
+PK__Scraper__3214EC274C308081;perseus;dbo;Scraper;PRIMARY KEY;NO;NO
+sequence_type_PK;perseus;dbo;sequence_type;PRIMARY KEY;NO;NO
+smurf_PK;perseus;dbo;smurf;PRIMARY KEY;NO;NO
+UQ__smurf__72E12F1B300424B4;perseus;dbo;smurf;UNIQUE;NO;NO
+smurf_goo_type_FK_1;perseus;dbo;smurf_goo_type;FOREIGN KEY;NO;NO
+smurf_goo_type_FK_2;perseus;dbo;smurf_goo_type;FOREIGN KEY;NO;NO
+smurf_goo_type_PK;perseus;dbo;smurf_goo_type;PRIMARY KEY;NO;NO
+sg_creator_FK_1;perseus;dbo;smurf_group;FOREIGN KEY;NO;NO
+smurf_group_PK;perseus;dbo;smurf_group;PRIMARY KEY;NO;NO
+UQ__smurf_gr__72E12F1B1368499A;perseus;dbo;smurf_group;UNIQUE;NO;NO
+smurf_group_member_FK_1;perseus;dbo;smurf_group_member;FOREIGN KEY;NO;NO
+smurf_group_member_FK_2;perseus;dbo;smurf_group_member;FOREIGN KEY;NO;NO
+smurf_group_member_PK;perseus;dbo;smurf_group_member;PRIMARY KEY;NO;NO
+UQ__smurf_gr__327439FA182CFEB7;perseus;dbo;smurf_group_member;UNIQUE;NO;NO
+smurf_property_FK_1;perseus;dbo;smurf_property;FOREIGN KEY;NO;NO
+smurf_property_FK_2;perseus;dbo;smurf_property;FOREIGN KEY;NO;NO
+smurf_property_PK;perseus;dbo;smurf_property;PRIMARY KEY;NO;NO
+UQ__smurf_pr__92833C0B5BE2A6F2;perseus;dbo;smurf_property;UNIQUE;NO;NO
+FK__submissio__submi__739DC5E2;perseus;dbo;submission;FOREIGN KEY;NO;NO
+PK__submissi__3213E83F71B57D70;perseus;dbo;submission;PRIMARY KEY;NO;NO
+CK__submissio__prior__7B3EE7AA;perseus;dbo;submission_entry;CHECK;NO;NO
+CK__submissio__sampl__4814495F;perseus;dbo;submission_entry;CHECK;NO;NO
+CK__submissio__statu__7A4AC371;perseus;dbo;submission_entry;CHECK;NO;NO
+FK__submissio__assay__78627AFF;perseus;dbo;submission_entry;FOREIGN KEY;NO;NO
+FK__submissio__mater__79569F38;perseus;dbo;submission_entry;FOREIGN KEY;NO;NO
+FK__submissio__prepp__7D27301C;perseus;dbo;submission_entry;FOREIGN KEY;NO;NO
+FK__submissio__submi__7C330BE3;perseus;dbo;submission_entry;FOREIGN KEY;NO;NO
+PK__submissi__3213E83F767A328D;perseus;dbo;submission_entry;PRIMARY KEY;NO;NO
+PK__sysdiagr__C2B05B616C45BFBC;perseus;dbo;sysdiagrams;PRIMARY KEY;NO;NO
+UK_principal_name;perseus;dbo;sysdiagrams;UNIQUE;NO;NO
+PK__sysrepls__10A5BE63BBEAB786;perseus;dbo;sysreplservers;PRIMARY KEY;NO;NO
+FK_transition_material_fatsmurf;perseus;dbo;transition_material;FOREIGN KEY;NO;NO
+FK_transition_material_goo;perseus;dbo;transition_material;FOREIGN KEY;NO;NO
+PK__transiti__A691E4B26DCF7A5F;perseus;dbo;transition_material;PRIMARY KEY;NO;NO
+unit_PK;perseus;dbo;unit;PRIMARY KEY;NO;NO
+workflow_creator_FK_1;perseus;dbo;workflow;FOREIGN KEY;NO;NO
+workflow_manufacturer_id_FK_1;perseus;dbo;workflow;FOREIGN KEY;NO;NO
+workflow_PK;perseus;dbo;workflow;PRIMARY KEY;NO;NO
+UQ__workflow__72E12F1B00CBDB56;perseus;dbo;workflow;UNIQUE;NO;NO
+workflow_attachment_FK_1;perseus;dbo;workflow_attachment;FOREIGN KEY;NO;NO
+workflow_attachment_FK_2;perseus;dbo;workflow_attachment;FOREIGN KEY;NO;NO
+workflow_attachment_PK;perseus;dbo;workflow_attachment;PRIMARY KEY;NO;NO
+workflow_section_FK_1;perseus;dbo;workflow_section;FOREIGN KEY;NO;NO
+workflow_step_start_FK_1;perseus;dbo;workflow_section;FOREIGN KEY;NO;NO
+workflow_section_PK;perseus;dbo;workflow_section;PRIMARY KEY;NO;NO
+UQ__workflow__7533C67705909073;perseus;dbo;workflow_section;UNIQUE;NO;NO
+UQ__workflow__D3897980086CFD1E;perseus;dbo;workflow_section;UNIQUE;NO;NO
+FK_workflow_step_goo_type;perseus;dbo;workflow_step;FOREIGN KEY;NO;NO
+FK_workflow_step_property;perseus;dbo;workflow_step;FOREIGN KEY;NO;NO
+FK_workflow_step_smurf;perseus;dbo;workflow_step;FOREIGN KEY;NO;NO
+FK_workflow_step_workflow;perseus;dbo;workflow_step;FOREIGN KEY;NO;NO
+workflow_step_unit_FK_1;perseus;dbo;workflow_step;FOREIGN KEY;NO;NO
+workflow_step_PK;perseus;dbo;workflow_step;PRIMARY KEY;NO;NO
+workflow_step_type_PK;perseus;dbo;workflow_step_type;PRIMARY KEY;NO;NO
+UQ__workflow__72E12F1B0B20E345;perseus;dbo;workflow_step_type;UNIQUE;NO;NO
