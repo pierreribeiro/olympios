@@ -72,7 +72,10 @@ This directory contains a **fully automated data migration workflow** designed t
 
 | File | Purpose | Usage |
 |------|---------|-------|
-| `load-data.sh` | Orchestrate CSV loading in dependency order | `./load-data.sh` |
+| `load-data.sh` | CSV loading via Docker container | `./load-data.sh` |
+| **`load_data.sh`** | **CSV loading via local psql + .pgpass** | `./load_data.sh` |
+| `test_load_data.sh` | Verification suite for load_data.sh | `./test_load_data.sh` |
+| `LOAD-DATA-LOCAL.md` | Documentation for load_data.sh | — |
 
 ### Validation Scripts (PostgreSQL)
 
