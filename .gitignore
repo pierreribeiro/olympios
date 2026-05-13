@@ -1,3 +1,19 @@
+# Per-worktree env files
+.env
+**/.env
+
+# Pre-removal dumps
+.perseus/
+
+# TMUX state
+.tmux/
+
+# Editor caches
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

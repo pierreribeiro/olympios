@@ -1,0 +1,21 @@
+# .gtrconfig — committed to repo root
+
+[copy]
+    include = **/.env.example
+    include = .editorconfig
+    include = .nvmrc
+    include = CLAUDE.md
+    exclude = **/.env
+    exclude = **/secrets/**
+
+[hooks]
+    postCreate = scripts/gtr-hooks/postCreate.sh
+    preRemove  = scripts/gtr-hooks/preRemove.sh
+    postCd     = '[ -f .env ] && set -a && . ./.env && set +a || true'
+
+[defaults]
+    editor = code        # VS Code — runs outside TMUX
+    ai = claude
+
+[ui]
+    color = auto

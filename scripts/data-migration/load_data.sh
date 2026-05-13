@@ -172,7 +172,7 @@ load_environment() {
     PG_USER="${PG_USER:-perseus_admin}"
     PG_SCHEMA="${PG_SCHEMA:-perseus}"
     DATA_DIR="${DATA_DIR:-/tmp/perseus-data-export}"
-    LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/logs}"
+    LOG_DIR="${LOG_DIR:-${SCRIPT_DIR}/.logs}"
 
     # Ensure log directory exists
     mkdir -p "${LOG_DIR}"
@@ -352,8 +352,7 @@ trap cleanup EXIT
 # TABLE DEFINITIONS (dependency-ordered tiers)
 # -----------------------------------------------------------------------------
 TIER0_TABLES=(
-    "permissions"
-    "perseus_table_and_row_counts"
+    "permissions"    
     "scraper"
     "unit"
     "recipe_category"

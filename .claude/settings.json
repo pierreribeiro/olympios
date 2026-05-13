@@ -39,6 +39,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/agent-visibility.sh"
+          }
+        ]
+      }
     ]
   },
   "enableAllProjectMcpServers": true,
