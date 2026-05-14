@@ -4,7 +4,7 @@
 **Analysis Date:** 2025-12-15  
 **Analyst:** Pierre Ribeiro + Claude (Database Expert)  
 **Scope:** 22 Views in `source/original/sqlserver/Views/`  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 
@@ -665,7 +665,7 @@ AND ISNULL(r.feedstock_material,'') != ISNULL(r.resultant_material,'')
 
 ## 📊 Migration Priority Matrix
 
-### P0 - ABSOLUTE CRITICAL (Sprint 9 - Before Functions)
+### P0 - ABSOLUTE CRITICAL (Before Functions)
 
 | View | Reason | Dependencies | Complexity |
 |------|--------|--------------|------------|
@@ -676,7 +676,7 @@ AND ISNULL(r.feedstock_material,'') != ISNULL(r.resultant_material,'')
 
 ---
 
-### P1 - HIGH (Sprint 10-11)
+### P1 - HIGH
 
 | View | Reason | Dependencies | Complexity |
 |------|--------|--------------|------------|
@@ -684,11 +684,11 @@ AND ISNULL(r.feedstock_material,'') != ISNULL(r.resultant_material,'')
 | downstream | Used for lineage queries | translated ⭐⭐⭐⭐ | 7/10 |
 | goo_relationship | Used by Get* functions | goo, fatsmurf, hermes.run | 6/10 |
 
-**Timeline:** Sprint 10-11 (2 weeks)
+**Timeline:** (2 weeks)
 
 ---
 
-### P2 - MEDIUM (Sprint 12-13)
+### P2 - MEDIUM
 
 | View | Reason | Dependencies | Complexity |
 |------|--------|--------------|------------|
@@ -699,25 +699,25 @@ AND ISNULL(r.feedstock_material,'') != ISNULL(r.resultant_material,'')
 | vw_lot_path | Lot paths | Recursive relationships | 7/10 |
 | vw_material_transition_material_up | Upstream relationships | material_transition, transition_material | 4/10 |
 
-**Timeline:** Sprint 12-13 (2 weeks)
+**Timeline:** (2 weeks)
 
 ---
 
-### P3 - LOW (Sprint 14-15)
+### P3 - LOW
 
 | View | Reason | Dependencies | Complexity |
 |------|--------|--------------|------------|
 | combined_* family (5 views) | Field mapping | field_map tables | 4/10 |
 | vw_* family (5 remaining) | Business logic/reports | Various | 4-6/10 |
 
-**Timeline:** Sprint 14-15 (2 weeks)
+**Timeline:** (2 weeks)
 
 ---
 
 ## 🔄 Migration Strategy Recommendations
 
 ### Phase 1: Critical Materialized View (P0)
-**Timeline:** Sprint 9 (1 week)
+**Timeline:** (1 week)
 1. Create `translated` as MATERIALIZED VIEW
 2. Add UNIQUE INDEX for REFRESH CONCURRENTLY
 3. Implement trigger-based refresh strategy
@@ -725,20 +725,20 @@ AND ISNULL(r.feedstock_material,'') != ISNULL(r.resultant_material,'')
 5. **GATE:** No functions migration until translated is validated
 
 ### Phase 2: Lineage Views (P1)
-**Timeline:** Sprint 10-11 (2 weeks)
+**Timeline:** (2 weeks)
 1. Create upstream/downstream views (recursive CTEs)
 2. Create goo_relationship view (UNION)
 3. Test integration with Get* functions
 4. Performance tuning for recursive queries
 
 ### Phase 3: Business Logic (P2)
-**Timeline:** Sprint 12-13 (2 weeks)
+**Timeline:** (2 weeks)
 1. Create integration views (hermes_run)
 2. Create business entity views (vw_lot family)
 3. Test with application queries
 
 ### Phase 4: Low Priority (P3)
-**Timeline:** Sprint 14-15 (2 weeks)
+**Timeline:** (2 weeks)
 1. Create combined_* UNION views
 2. Create remaining vw_* views
 3. Deprecate unused views

@@ -4,7 +4,7 @@
 **Analysis Date:** 2025-12-15  
 **Analyst:** Pierre Ribeiro + Claude (Database Expert)  
 **Scope:** 24 Functions in `source/original/sqlserver/Functions/`  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 
@@ -549,7 +549,7 @@ RETURNS VARCHAR(MAX)
 
 ## 📊 Migration Priority Matrix
 
-### P0 - CRITICAL (Immediate - Sprint 9-10)
+### P0 - CRITICAL (Immediate)
 
 | Function | Reason | SP Dependencies | Complexity |
 |----------|--------|-----------------|------------|
@@ -558,7 +558,7 @@ RETURNS VARCHAR(MAX)
 | McGetUpStreamByList | Called by P0/P1 SPs (ReconcileMUpstream) | ReconcileMUpstream, ProcessSomeMUpstream | 9/10 |
 | McGetDownStreamByList | Mirror of McGetUpStreamByList | Future batch operations | 8/10 |
 
-### P1 - HIGH (Next Sprint 11-12)
+### P1 - HIGH (Next)
 
 | Function | Reason | Dependencies | Complexity |
 |----------|--------|--------------|------------|
@@ -570,7 +570,7 @@ RETURNS VARCHAR(MAX)
 | GetDownStreamContainers | Mirror of GetUpStreamContainers | Applications | 6/10 |
 | GetUnProcessedUpStream | Status filtering | GetUpstreamMasses | 5/10 |
 
-### P2 - MEDIUM (Sprint 13-14)
+### P2 - MEDIUM
 
 | Function | Reason | Usage | Complexity |
 |----------|--------|-------|------------|
@@ -581,7 +581,7 @@ RETURNS VARCHAR(MAX)
 | GetFermentationFatSmurf | Fermentation lookup | Fermentation module | 5/10 |
 | McGetUpDownStream | Combined traversal | Applications | 4/10 |
 
-### P3 - LOW (Sprint 15+)
+### P3 - LOW
 
 | Function | Reason | Usage | Complexity |
 |----------|--------|-------|------------|
@@ -599,7 +599,7 @@ RETURNS VARCHAR(MAX)
 ## 🔄 Migration Strategy Recommendations
 
 ### Phase 1: Core Functions (P0)
-**Timeline:** Sprint 9-10 (2 weeks)
+**Timeline:** (2 weeks)
 1. Migrate McGet* family (4 functions)
 2. Convert GooList TVP to TEMPORARY TABLE pattern
 3. Remove `WITH (NOLOCK)` hints
@@ -607,21 +607,21 @@ RETURNS VARCHAR(MAX)
 5. Performance benchmark vs SQL Server
 
 ### Phase 2: Legacy Hierarchy (P1)
-**Timeline:** Sprint 11-12 (2 weeks)
+**Timeline:** (2 weeks)
 1. Migrate Get* family (7 functions)
 2. Validate nested sets model behavior
 3. Test integration with existing views
 4. Consider ltree extension evaluation
 
 ### Phase 3: Complex & Specialized (P2)
-**Timeline:** Sprint 13-14 (2 weeks)
+**Timeline:** (2 weeks)
 1. Refactor GetUpstreamMasses (cursor → set-based)
 2. Migrate robot automation functions
 3. Test calculation accuracy
 4. Performance optimization
 
 ### Phase 4: Utilities (P3)
-**Timeline:** Sprint 15 (1 week)
+**Timeline:** (1 week)
 1. Migrate utility functions
 2. Use PostgreSQL built-ins where possible
 3. Minimal testing required

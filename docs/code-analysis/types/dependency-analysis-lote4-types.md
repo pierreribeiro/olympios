@@ -4,7 +4,7 @@
 **Analysis Date:** 2025-12-15  
 **Analyst:** Pierre Ribeiro + Claude (Database Expert)  
 **Scope:** 1 User-Defined Table Type in Perseus Database  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 
@@ -25,7 +25,7 @@ This document provides comprehensive dependency analysis of the user-defined tab
 | **Structure** | Single column: uid NVARCHAR(50), PRIMARY KEY | Ensures uniqueness in batch operations |
 | **Used by P0 Functions** | 2 | McGetUpStreamByList, McGetDownStreamByList |
 | **Used by P0 Stored Procedures** | 2 | ReconcileMUpstream, ProcessSomeMUpstream |
-| **PostgreSQL Conversion Options** | 3 | TEMP TABLE (recommended), ARRAY, JSONB |
+| **PostgreSQL Conversion Options** | 3 | ARRAY of Composite Types, TEMP TABLE, JSONB, ARRAY, JSONB |
 | **Migration Complexity** | HIGH | Requires function signature changes |
 
 ### Critical Discovery
@@ -37,7 +37,7 @@ This document provides comprehensive dependency analysis of the user-defined tab
 - Has PRIMARY KEY constraint ensuring uniqueness (no duplicate UIDs)
 - PostgreSQL has NO native Table-Valued Parameters
 - Conversion strategy MUST be decided before function migration
-- Recommended: TEMPORARY TABLE pattern for minimal code changes
+- Recommended: ARRAY of Composite Types pattern (OPTION 4) - hybrid approach combining array parameters with internal temp tables
 
 ---
 
@@ -613,46 +613,259 @@ $$;
 
 **Rationale:**
 
-1. **Closest to SQL Server Semantics:**
-   - Table-like behavior maintained
-   - Natural SQL JOINs
-   - Less code overall
+1. **Hybrid Approach - Best of Both Worlds:**
+   - Combines native PostgreSQL array operations with temp table performance
+   - Array parameter at function signature level (clean interface)
+   - Internal temp table for JOIN performance and PRIMARY KEY enforcement
+   - Maintains SQL Server TVP semantics while leveraging PostgreSQL strengths
 
-2. **Performance:**
-   - Native PostgreSQL array operations (ANY, unnest)
-   - Syntax complicity similar to option 2 (composite type instead of VARCHAR)
-   
-3. **Code Clarity:**
-   - Explicit Native PostgreSQL array = clear intent
-   - Standard SQL syntax (no unnest/jsonb functions)
-   - Easy to debug (Less code overall)
+2. **Performance Optimization:**
+   - UNNEST() converts array to temp table in single operation (O(n) linear time)
+   - PRIMARY KEY on internal temp table enables indexed lookups
+   - Query planner optimizes JOINs against temp table efficiently
+   - No external temp table management overhead (handled internally)
+   - Memory-efficient: temp table dropped automatically at function end
 
-4. **Future-Proof:**
-   - Supports multiple columns (if GooList evolves)
-   - Familiar pattern for DBAs
+3. **Code Maintainability:**
+   - Clean function signature: `mcgetupstreambylist(p_uids perseus.goolist[])`
+   - No dynamic SQL (EXECUTE/format) required
+   - Caller uses familiar ARRAY_AGG() pattern from standard SQL
+   - Internal temp table implementation hidden from callers
+   - Easy to debug: temp table queryable during function execution
+   - Type-safe: `perseus.goolist[]` provides compile-time validation
+
+4. **Future-Proof Architecture:**
+   - Composite type `perseus.goolist` can evolve (add columns without breaking callers)
+   - Supports extensibility: add metadata fields (timestamp, source_system, etc.)
+   - Pattern reusable for other batch operations across codebase
+   - Compatible with PostgreSQL array functions (array_length, array_append, etc.)
+   - Migration path: if performance issues arise, internals can be optimized without changing external API
 
 **Implementation Plan:**
 
-1. **Phase 1:** Create temp table wrapper functions
-   ```sql
-   CREATE OR REPLACE FUNCTION create_goolist_temp(p_table_name TEXT)
-   RETURNS VOID AS $$
-   BEGIN
-       EXECUTE format('
-           CREATE TEMP TABLE IF NOT EXISTS %I (
-               uid VARCHAR(50) NOT NULL PRIMARY KEY
-           ) ON COMMIT DROP
-       ', p_table_name);
-   END;
-   $$ LANGUAGE plpgsql;
-   ```
+**Phase 1: Create Composite Type**
+```sql
+-- Step 1: Define composite type matching SQL Server GooList structure
+CREATE TYPE perseus.goolist AS (
+    uid VARCHAR(50)
+);
 
-2. **Phase 2:** Convert functions to accept temp table names
+-- Step 2: Validate type creation
+SELECT ROW('m123')::perseus.goolist;
+-- Expected: ("m123")
 
-3. **Phase 3:** Convert stored procedures to use temp tables
+-- Step 3: Test array creation
+SELECT ARRAY[ROW('m123')::perseus.goolist, ROW('m456')::perseus.goolist];
+-- Expected: {"(m123)","(m456)"}
+```
 
-4. **Phase 4:** Test with production-scale batches
+**Validation Criteria:**
+- ✅ Type created in `perseus` schema
+- ✅ Can cast VARCHAR to goolist composite type
+- ✅ Can create arrays of goolist type
+- ✅ No conflicts with existing objects
 
+---
+
+**Phase 2: Convert McGetUpStreamByList Function**
+```sql
+-- Step 1: Create function with array parameter
+CREATE OR REPLACE FUNCTION perseus.mcgetupstreambylist(
+    p_uids perseus.goolist[]  -- Array of composite type goolist
+)
+RETURNS TABLE (
+    start_point VARCHAR(50),
+    end_point VARCHAR(50),
+    neighbor VARCHAR(50),
+    path VARCHAR(500),
+    level INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Step 2: Create internal temp table from array parameter
+    CREATE TEMP TABLE IF NOT EXISTS v_starting_point (
+        uid VARCHAR(50) NOT NULL,
+        PRIMARY KEY (uid)
+    ) ON COMMIT DROP;
+
+    -- Step 3: Populate temp table from array using UNNEST
+    -- DISTINCT ensures uniqueness even if caller passes duplicates
+    INSERT INTO v_starting_point (uid)
+    SELECT DISTINCT (goo).uid  -- Note: (goo).uid syntax to extract field from composite
+    FROM UNNEST(p_uids) AS goo
+    ON CONFLICT (uid) DO NOTHING;  -- Graceful handling of duplicates
+
+    -- Step 4: Execute recursive CTE with JOIN to temp table
+    RETURN QUERY
+    WITH RECURSIVE upstream (start_point, parent, child, path, level) AS ( 
+        -- Base case: direct parents from translated view
+        SELECT 
+            CAST(pt.destination_material AS VARCHAR(50)) AS start_point,
+            CAST(pt.destination_material AS VARCHAR(50)) AS parent,
+            CAST(pt.source_material AS VARCHAR(50)) AS child,
+            CAST('/' AS VARCHAR(500)) AS path,
+            1 AS level
+        FROM perseus.translated pt 
+        JOIN v_starting_point sp ON sp.uid = pt.destination_material
+        
+        UNION ALL
+        
+        -- Recursive case: traverse up the lineage tree
+        SELECT 
+            r.start_point, 
+            CAST(pt.destination_material AS VARCHAR(50)) AS parent, 
+            CAST(pt.source_material AS VARCHAR(50)) AS child,
+            CAST(r.path || r.child || '/' AS VARCHAR(500)) AS path, 
+            r.level + 1 AS level
+        FROM perseus.translated pt
+        JOIN upstream r ON pt.destination_material = r.child
+        WHERE pt.destination_material != pt.source_material  -- Prevent cycles
+    )
+    -- Return all upstream paths
+    SELECT u.start_point, u.child AS end_point, u.parent, u.path, u.level 
+    FROM upstream u
+    
+    UNION
+    
+    -- Include starting points themselves (level 0)
+    SELECT 
+        CAST(sp.uid AS VARCHAR(50)) AS start_point, 
+        CAST(sp.uid AS VARCHAR(50)) AS end_point, 
+        CAST(NULL AS VARCHAR(50)) AS parent, 
+        CAST('' AS VARCHAR(500)) AS path, 
+        CAST(0 AS INT) AS level 
+    FROM v_starting_point sp
+    WHERE EXISTS (SELECT 1 FROM perseus.goo WHERE sp.uid = goo.uid);
+    
+    -- Note: Temp table v_starting_point automatically dropped at function end
+END;
+$$;
+```
+
+**Testing Steps:**
+1. Test with single UID: `SELECT * FROM perseus.mcgetupstreambylist(ARRAY[ROW('m123')::perseus.goolist])`
+2. Test with multiple UIDs: `SELECT * FROM perseus.mcgetupstreambylist(ARRAY[ROW('m123')::perseus.goolist, ROW('m456')::perseus.goolist])`
+3. Test with duplicates: Verify ON CONFLICT handling
+4. Test with empty array: `SELECT * FROM perseus.mcgetupstreambylist(ARRAY[]::perseus.goolist[])`
+5. Compare results with SQL Server original function
+
+---
+
+**Phase 3: Update Stored Procedures**
+```sql
+-- Step 1: Modify ReconcileMUpstream to use array pattern
+CREATE OR REPLACE PROCEDURE perseus.reconcile_m_upstream()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_dirty_uids perseus.goolist[];
+    v_clean_uids perseus.goolist[];
+    v_batch_size INTEGER := 10;  -- Configurable batch size
+BEGIN
+    -- Step 2: Populate array from m_upstream_dirty_leaves table
+    -- ARRAY_AGG collects rows into array, ROW()::type casts to composite
+    SELECT ARRAY_AGG(ROW(uid)::perseus.goolist)
+    INTO v_dirty_uids
+    FROM (
+        SELECT uid 
+        FROM perseus.m_upstream_dirty_leaves 
+        LIMIT v_batch_size
+    ) t;
+
+    -- Step 3: Handle empty array case
+    IF v_dirty_uids IS NULL OR array_length(v_dirty_uids, 1) = 0 THEN
+        RAISE NOTICE 'No dirty materials to reconcile';
+        RETURN;
+    END IF;
+
+    -- Step 4: Initialize clean array (empty initially)
+    v_clean_uids := ARRAY[]::perseus.goolist[];
+
+    -- Step 5: Call function with array parameters
+    -- Function returns table, so use INSERT INTO or FOR loop
+    INSERT INTO perseus.new_upstream (start_point, end_point, neighbor, path, level)
+    SELECT start_point, end_point, neighbor, path, level
+    FROM perseus.mcgetupstreambylist(v_dirty_uids);
+
+    -- Step 6: Log reconciliation metrics
+    RAISE NOTICE 'Reconciled % materials', array_length(v_dirty_uids, 1);
+END;
+$$;
+```
+
+**Testing Steps:**
+1. Execute procedure in test environment
+2. Verify INSERT INTO new_upstream has correct row count
+3. Compare results with SQL Server ReconcileMUpstream output
+4. Test with various batch sizes (10, 50, 100 UIDs)
+5. Validate performance metrics
+
+---
+
+**Phase 4: Production-Scale Testing & Optimization**
+
+**Step 1: Benchmark Testing**
+```sql
+-- Test script for various batch sizes
+DO $$
+DECLARE
+    v_test_uids perseus.goolist[];
+    v_start_time TIMESTAMP;
+    v_end_time TIMESTAMP;
+    v_duration INTERVAL;
+    v_result_count INTEGER;
+BEGIN
+    -- Test batch size: 10 UIDs
+    SELECT ARRAY_AGG(ROW(uid)::perseus.goolist) INTO v_test_uids
+    FROM (SELECT uid FROM perseus.goo LIMIT 10) t;
+    
+    v_start_time := clock_timestamp();
+    SELECT COUNT(*) INTO v_result_count 
+    FROM perseus.mcgetupstreambylist(v_test_uids);
+    v_end_time := clock_timestamp();
+    v_duration := v_end_time - v_start_time;
+    
+    RAISE NOTICE 'Batch size 10: % results in %', v_result_count, v_duration;
+    
+    -- Repeat for batch sizes: 50, 100, 500, 1000
+    -- Compare with SQL Server baseline performance
+END $$;
+```
+
+**Step 2: Index Optimization**
+- Monitor query plans: `EXPLAIN ANALYZE SELECT * FROM perseus.mcgetupstreambylist(...)`
+- Verify temp table PRIMARY KEY is used efficiently
+- Check for sequential scans (should be avoided)
+- Ensure `translated` materialized view index is utilized
+
+**Step 3: Memory Tuning**
+```sql
+-- Adjust work_mem if large batches cause disk spills
+SET work_mem = '256MB';  -- Per-session setting
+
+-- Monitor temp table usage
+SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename))
+FROM pg_tables
+WHERE tablename LIKE 'v_starting_point%';
+```
+
+**Step 4: Edge Case Testing**
+- Empty array: `ARRAY[]::perseus.goolist[]`
+- Single UID: `ARRAY[ROW('m123')::perseus.goolist]`
+- Duplicate UIDs: Verify ON CONFLICT handling
+- Non-existent UIDs: Should return empty resultset gracefully
+- NULL values: Type system should prevent, but test anyway
+- Very large batch (1000+ UIDs): Monitor memory and performance
+
+**Step 5: Validation Criteria**
+- ✅ Functional correctness: Results match SQL Server 100%
+- ✅ Performance: Within 20% of SQL Server baseline
+- ✅ No data loss: All upstream relationships preserved
+- ✅ Stability: No memory leaks or temp table bloat
+- ✅ Error handling: Graceful failure modes
+
+---
 ---
 
 ### 4. **NVARCHAR vs VARCHAR Conversion**
@@ -735,24 +948,24 @@ uid CITEXT  -- Case-insensitive text type
 
 ## 📊 Migration Priority Matrix
 
-### P0 - ABSOLUTE CRITICAL (Sprint 9 - Before Functions)
+### P0 - ABSOLUTE CRITICAL (Before Functions)
 
 | Object | Reason | Depends On | Blocks |
 |--------|--------|------------|--------|
 | **GooList Type** | Used by P0 functions & SPs | None (foundational) | McGetUpStreamByList, McGetDownStreamByList, ReconcileMUpstream, ProcessSomeMUpstream |
 
 **Timeline:** MUST be completed BEFORE McGet*ByList functions migration  
-**Strategy Decision:** MUST be decided in Sprint 9 Week 1  
+**Strategy Decision:** MUST be decided in Week 1  
 **Testing:** Proof-of-concept with small batch (10 UIDs) then production scale (100+ UIDs)
 
 ---
 
 ## 🔄 Migration Strategy Recommendations
 
-### Phase 1: Strategy Decision & POC (Sprint 9 Week 1)
+### Phase 1: Strategy Decision & POC
 
 **Step 1: Decide on Conversion Strategy**
-- **Recommendation:** TEMPORARY TABLE pattern
+- **Recommendation:** ARRAY of Composite Types pattern (OPTION 4)
 - **Validation:** Prototype all 3 options with 10-row test
 - **Benchmark:** Compare performance (temp table vs array vs jsonb)
 - **Decision Criteria:** Performance + code clarity + maintainability
@@ -786,7 +999,7 @@ INSERT INTO temp_dirty_in (uid) VALUES ('m123'), ('m456');
 
 ---
 
-### Phase 2: Function Migration (Sprint 9 Week 2)
+### Phase 2: Function Migration
 
 **Step 1: Convert McGetUpStreamByList**
 ```sql
@@ -807,7 +1020,7 @@ CREATE FUNCTION mcget_upstream_by_list(p_temp_table_name TEXT)
 
 ---
 
-### Phase 3: Stored Procedure Migration (Sprint 10)
+### Phase 3: Stored Procedure Migration
 
 **Step 1: Update ReconcileMUpstream**
 ```sql
@@ -832,7 +1045,7 @@ PERFORM * FROM mcget_upstream_by_list('temp_dirty_in');
 
 ---
 
-### Phase 4: Performance Optimization (Sprint 11)
+### Phase 4: Performance Optimization
 
 **Step 1: Batch Size Tuning**
 - Current: TOP 10 per batch (ReconcileMUpstream)
@@ -920,33 +1133,61 @@ TYPE GooList ⭐⭐⭐⭐
 
 ## 📌 Document Metadata
 
-**Version:** 1.0  
-**Last Updated:** 2025-12-15  
+**Version:** 1.1  
+**Last Updated:** 2025-12-30  
 **Next Review:** Final Consolidated Dependency Tree  
 **Maintained By:** Pierre Ribeiro (Senior DBA/DBRE)  
 **Project:** Perseus Database Migration - SQL Server → PostgreSQL 17  
 **Dependencies:** Lote 1 (Stored Procedures), Lote 2 (Functions), Lote 3 (Views)
 
+### 📝 Version History
+
+**Version 1.1** (2025-12-30)
+- ⭐ **MAJOR CHANGE:** Shifted recommendation from OPTION 1 (TEMP TABLE Pattern) to OPTION 4 (ARRAY of Composite Types)
+- ✅ **ADDED:** Complete OPTION 4 implementation with detailed code examples
+- ✅ **REWRITTEN:** Section 3 "Recommended Strategy" completely rewritten with new rationale and 4-phase implementation plan
+- ✅ **UPDATED:** Comparison matrix expanded to include OPTION 4 with 13 comparison criteria
+- ✅ **ENHANCED:** Added type safety, caller code simplicity, and internal implementation complexity as evaluation criteria
+- 📊 **RATIONALE:** OPTION 4 combines best of both worlds - clean array parameter API with internal temp table performance
+- 🎯 **IMPACT:** Maintains PRIMARY KEY enforcement, provides type safety, and simplifies caller code while preserving performance
+
+**Version 1.0** (2025-12-15)
+- Initial analysis of GooList user-defined table type
+- Documented 3 conversion strategies (TEMP TABLE, ARRAY, JSONB)
+- Recommended TEMP TABLE pattern as primary strategy
+- Complete dependency analysis with 4 objects (2 functions, 2 SPs)
+
+
 ---
 
 ## 📚 Appendix: Conversion Strategy Comparison Matrix
 
-| Criterion | TEMP TABLE ⭐ | ARRAY | JSONB |
-|-----------|--------------|-------|-------|
-| **Performance (small batch <100)** | Good | Excellent | Good |
-| **Performance (large batch >100)** | Excellent | Poor | Good |
-| **Code Complexity** | Medium | Low | Medium |
-| **SQL Server Similarity** | High | Low | Low |
-| **PRIMARY KEY Support** | ✅ Yes | ❌ No | ❌ No |
-| **Memory Usage** | Low (disk-backed) | High (in-memory) | Medium |
-| **Query Plan Optimization** | Excellent | Poor | Good |
-| **Debugging Ease** | Excellent | Medium | Medium |
-| **Future Extensibility** | Excellent | Poor | Excellent |
-| **Learning Curve** | Low | Medium | High |
-| **RECOMMENDATION** | ⭐⭐⭐ | ⭐ | ⭐⭐ |
+| Criterion | TEMP TABLE (Option 1) | ARRAY Simple (Option 2) | JSONB (Option 3) | ARRAY Composite ⭐ (Option 4) |
+|-----------|--------------|-------|-------|------------------------|
+| **Performance (small batch <100)** | Good | Excellent | Good | Excellent |
+| **Performance (large batch >100)** | Excellent | Poor | Good | Excellent |
+| **Code Complexity** | Medium | Low | Medium | Low-Medium |
+| **SQL Server Similarity** | High | Low | Low | High |
+| **PRIMARY KEY Support** | ✅ Yes | ❌ No | ❌ No | ✅ Yes (internal) |
+| **Memory Usage** | Low (disk-backed) | High (in-memory) | Medium | Low (disk-backed) |
+| **Query Plan Optimization** | Excellent | Poor | Good | Excellent |
+| **Debugging Ease** | Excellent | Medium | Medium | Excellent |
+| **Future Extensibility** | Excellent | Poor | Excellent | Excellent |
+| **Learning Curve** | Low | Medium | High | Low |
+| **Type Safety** | ✅ Strong | ⚠️ Weak | ⚠️ Weak | ✅ Strong |
+| **Caller Code Simplicity** | ❌ Complex (temp table mgmt) | ✅ Simple (ARRAY_AGG) | ⚠️ Medium (JSON build) | ✅ Simple (ARRAY_AGG) |
+| **Internal Implementation** | Simple (name passing) | Simple (direct use) | Simple (JSON parse) | Medium (UNNEST + temp) |
+| **RECOMMENDATION** | ⭐⭐ | ⭐ | ⭐⭐ | ⭐⭐⭐⭐ |
 
-**Winner:** TEMPORARY TABLE pattern for production use.
+**Winner:** ARRAY of Composite Types (OPTION 4) - Hybrid approach combining best of array parameters (clean API) with temp tables (performance).
+
+**Key Advantages of OPTION 4:**
+- Clean function signature with type-safe array parameter
+- Internal temp table optimization for JOIN performance and PRIMARY KEY enforcement  
+- Caller simplicity matches OPTION 2 (simple ARRAY_AGG pattern)
+- Performance matches OPTION 1 (indexed temp table for large batches)
+- Future-proof: composite type can evolve without breaking callers
 
 ---
 
-**End of Lote 4 Analysis**
+**End of Lote 4 Analysis - Version 1.1**

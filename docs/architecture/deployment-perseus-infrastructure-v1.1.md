@@ -205,7 +205,7 @@ The `trust` for `postgres` is acceptable for **local single-developer dev enviro
 ### 3.1 Repository structure (relevant files only)
 
 ```
-sqlserver-to-postgresql-migration/                        # Git repo root
+olympios/                        # Git repo root
 └── infra/
     └── database/
         ├── .env.example                                  # ✅ committed (placeholders)
@@ -349,8 +349,8 @@ Run all checks from § 1. Stop and fix anything that fails before continuing.
 
 ```bash
 cd /Users/pierre.ribeiro/workspace/projects/amyris  # or wherever your repos live
-git clone git@github.com:pierreribeiro/sqlserver-to-postgresql-migration.git
-cd sqlserver-to-postgresql-migration/infra/database
+git clone git@github.com:pierreribeiro/olympios.git
+cd olympios/infra/database
 ```
 
 ### Step 3 — Configure `.env`
@@ -1259,7 +1259,7 @@ See `.env.example` for the full list with defaults.
 
 ```bash
 brew install postgresql@18
-cd /path/to/sqlserver-to-postgresql-migration/infra/database
+cd /path/to/olympios/infra/database
 cp .env.example .env
 $EDITOR .env                    # confirm PERSEUS_PGDATA_DIR matches your username
 ./init-db.sh init               # → prints password

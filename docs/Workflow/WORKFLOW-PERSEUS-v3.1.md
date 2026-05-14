@@ -85,7 +85,7 @@ Run § 0 **only** in these cases:
 - Workspace was deleted and needs to be rebuilt from scratch
 - Migration to a new mac
 
-If `~/dev/repos/github.com/pierreribeiro/sqlserver-to-postgresql-migration/` already exists with `.bare/` inside, **skip § 0** and proceed to § 9.1.
+If `~/dev/repos/github.com/pierreribeiro/olympios/` already exists with `.bare/` inside, **skip § 0** and proceed to § 9.1.
 
 ### 0.2 Bootstrap flowchart
 
@@ -151,7 +151,7 @@ export REPO_BASE_DIR="$HOME/workspace/projects"
 export PERSEUS_CLIENT="amyris"
 
 # Project root folder (computed from the above)
-export PERSEUS_BASE="$REPO_BASE_DIR/$PERSEUS_CLIENT/sqlserver-to-postgresql-migration"
+export PERSEUS_BASE="$REPO_BASE_DIR/$PERSEUS_CLIENT/olympios"
 
 # Convenience aliases
 alias perseus='cd $PERSEUS_BASE'
@@ -173,13 +173,13 @@ The **chicken-and-egg solver**:
 mkdir -p "$REPO_BASE_DIR/$PERSEUS_CLIENT"
 
 # Self-pulling bootstrap — uses $REPO_BASE_DIR and $PERSEUS_CLIENT from the shell environment
-curl -fsSL https://raw.githubusercontent.com/pierreribeiro/sqlserver-to-postgresql-migration/main/scripts/bootstrap-perseus-repo.sh | bash
+curl -fsSL https://raw.githubusercontent.com/pierreribeiro/olympios/main/scripts/bootstrap-perseus-repo.sh | bash
 ```
 
 > **What this does:**
 > - `curl` downloads `bootstrap-perseus-repo.sh` from GitHub raw — no clone required first
 > - `bash` pipes it to a shell for immediate execution
-> - The script then performs: `git clone --bare`, creates the hierarchy `~/dev/repos/github.com/pierreribeiro/sqlserver-to-postgresql-migration/`, runs `git worktree add main main`, sets the bare-repo fetch refspec
+> - The script then performs: `git clone --bare`, creates the hierarchy `~/dev/repos/github.com/pierreribeiro/olympios/`, runs `git worktree add main main`, sets the bare-repo fetch refspec
 
 After this step, all subsequent scripts and configuration files are available locally under `$PERSEUS_BASE/main/`.
 
@@ -463,7 +463,7 @@ Everything required to run the Perseus workflow. **First-time machine setup is h
 The repository encapsulates the entire TDD workflow: source artifacts, subagent definitions, skill knowledge, hooks, scripts, tests, and per-cycle audit trail.
 
 ```
-sqlserver-to-postgresql-migration/                        # repo root
+olympios/                        # repo root
 │
 ├── .bare/                                                # GIT_DIR (bare repo, gtr-managed)
 ├── .git                                                  # pointer file (gitdir: ./.bare)
@@ -1321,7 +1321,7 @@ psql -U perseus_owner -d perseus_dev -c "\dx"   # confirm extensions include pgt
 
 # Bootstrap workflow-specific layout
 cd $REPO_BASE_DIR  # set in ~/.zshrc, default ~/dev/repos
-./sqlserver-to-postgresql-migration/main/scripts/bootstrap-perseus-repo.sh
+./olympios/main/scripts/bootstrap-perseus-repo.sh
 
 # Configure per-developer git locals
 cd $PERSEUS_BASE/main

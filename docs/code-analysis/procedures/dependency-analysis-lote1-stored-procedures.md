@@ -4,7 +4,7 @@
 **Analysis Date:** 2025-12-15  
 **Analyst:** Pierre Ribeiro + Claude (Database Expert)  
 **Scope:** 21 Stored Procedures in `source/original/sqlserver/Stored-Procedures/`  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 

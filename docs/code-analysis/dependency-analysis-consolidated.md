@@ -4,7 +4,7 @@
 **Analysis Date:** 2025-12-15  
 **Analyst:** Pierre Ribeiro + Claude (Database Expert)  
 **Project:** Perseus Database Migration - SQL Server → PostgreSQL 17  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 
@@ -227,10 +227,10 @@ graph TB
 
 | Priority | Count | Percentage | Migration Timeline |
 |----------|-------|------------|-------------------|
-| **P0 - ABSOLUTE CRITICAL** | 9 | 13.2% | Sprint 9-10 (2-3 weeks) |
-| **P1 - HIGH** | 18 | 26.5% | Sprint 10-12 (4-6 weeks) |
-| **P2 - MEDIUM** | 25 | 36.8% | Sprint 12-14 (4-6 weeks) |
-| **P3 - LOW** | 16 | 23.5% | Sprint 14-15 (2-3 weeks) |
+| **P0 - ABSOLUTE CRITICAL** | 9 | 13.2% | (2-3 weeks) |
+| **P1 - HIGH** | 18 | 26.5% | (4-6 weeks) |
+| **P2 - MEDIUM** | 25 | 36.8% | (4-6 weeks) |
+| **P3 - LOW** | 16 | 23.5% | (2-3 weeks) |
 | **TOTAL** | **68** | **100%** | **12-18 weeks total** |
 
 ### P0 - ABSOLUTE CRITICAL (9 objects) ⭐⭐⭐⭐
@@ -305,7 +305,7 @@ graph TB
 | LinkUnlinkedMaterials | 5/10 | MEDIUM - Data cleanup | material_transition, transition_material |
 | MaterialToTransition | 2/10 | LOW - Simple helper | material_transition |
 
-**Timeline:** Sprint 10-12 (4-6 weeks)
+**Timeline:** (4-6 weeks)
 
 ---
 
@@ -345,7 +345,7 @@ graph TB
 - vw_recipe_prep (5/10) - Recipe preparation
 - vw_recipe_prep_part (4/10) - Recipe parts
 
-**Timeline:** Sprint 12-14 (4-6 weeks)
+**Timeline:** (4-6 weeks)
 
 ---
 
@@ -374,7 +374,7 @@ graph TB
 - vw_tom_perseus_sample_prep_materials (6/10) - User-specific (deprecation candidate)
 - Other custom views (4-5/10 each) - Review with stakeholders
 
-**Timeline:** Sprint 14-15 (2-3 weeks)
+**Timeline:** (2-3 weeks)
 
 ---
 
@@ -388,16 +388,16 @@ graph TB
 gantt
     title Perseus Migration Critical Path (P0 Objects Only)
     dateFormat  YYYY-MM-DD
-    section Sprint 9
+    section 1
     VIEW translated (Materialized)           :crit, p0_view, 2025-01-06, 5d
     TYPE GooList (Strategy Decision)         :crit, p0_type, after p0_view, 3d
     TYPE GooList (Implementation)            :crit, after p0_type, 2d
-    section Sprint 10
+    section 2
     FUNCTION McGetUpStream                   :crit, p0_f1, 2025-01-20, 3d
     FUNCTION McGetDownStream                 :crit, p0_f2, after p0_f1, 3d
     FUNCTION McGetUpStreamByList             :crit, p0_f3, after p0_f2, 4d
     FUNCTION McGetDownStreamByList           :crit, p0_f4, after p0_f3, 3d
-    section Sprint 11
+    section 3
     SP AddArc                                :crit, p0_sp1, 2025-02-03, 4d
     SP RemoveArc                             :crit, p0_sp2, after p0_sp1, 3d
     SP ReconcileMUpstream                    :crit, p0_sp3, after p0_sp2, 5d
@@ -490,7 +490,7 @@ gantt
 
 ## 🗓️ INTEGRATED MIGRATION ROADMAP
 
-### Phase 1: Foundation Layer (Sprint 9) - 2 weeks
+### Phase 1: Foundation Layer - 2 weeks
 
 **Goal:** Establish critical foundation (VIEW, TYPE)
 
@@ -515,7 +515,7 @@ gantt
 
 ---
 
-### Phase 2: Core Functions (Sprint 10) - 2 weeks
+### Phase 2: Core Functions - 2 weeks
 
 **Goal:** Migrate all McGet* family functions
 
@@ -538,7 +538,7 @@ gantt
 
 ---
 
-### Phase 3: Critical Stored Procedures (Sprint 11) - 2-3 weeks
+### Phase 3: Critical Stored Procedures - 2-3 weeks
 
 **Goal:** Migrate P0 stored procedures (AddArc, RemoveArc, ReconcileMUpstream)
 
@@ -565,7 +565,7 @@ gantt
 
 ---
 
-### Phase 4: High Priority Objects (Sprint 12-13) - 4 weeks
+### Phase 4: High Priority Objects - 4 weeks
 
 **Goal:** Migrate P1 objects (18 objects)
 
@@ -592,7 +592,7 @@ gantt
 
 ---
 
-### Phase 5: Medium Priority Objects (Sprint 14-15) - 4 weeks
+### Phase 5: Medium Priority Objects - 4 weeks
 
 **Goal:** Migrate P2 objects (25 objects)
 
@@ -618,7 +618,7 @@ gantt
 
 ---
 
-### Phase 6: Low Priority & Cleanup (Sprint 16) - 2 weeks
+### Phase 6: Low Priority & Cleanup - 2 weeks
 
 **Goal:** Migrate P3 objects + cleanup
 
@@ -638,7 +638,7 @@ gantt
 
 ---
 
-### Phase 7: Final Validation & Cutover (Sprint 17) - 2 weeks
+### Phase 7: Final Validation & Cutover - 2 weeks
 
 **Goal:** Production readiness validation
 
@@ -682,18 +682,18 @@ gantt
 
 ### Migration Gates (Go/No-Go Decision Points)
 
-**Gate 1 - After Sprint 9:**
+**Gate 1 - After Views and GooList**
 - ✅ VIEW `translated` performance validated
 - ✅ GooList strategy implemented and tested
-- Decision: Proceed to Sprint 10 or redesign
+- Decision: Proceed to next phase or redesign
 
-**Gate 2 - After Sprint 11:**
+**Gate 2 - After P0**
 - ✅ All P0 objects migrated
 - ✅ Critical path functional
 - ✅ Performance within 20% baseline
 - Decision: Proceed to P1/P2/P3 or address issues
 
-**Gate 3 - After Sprint 16:**
+**Gate 3 - After Gate 2**
 - ✅ All 68 objects migrated
 - ✅ End-to-end testing passing
 - Decision: Proceed to production cutover or extend testing
@@ -755,7 +755,7 @@ pie title Priority Distribution (All Objects)
 
 2. **GooList Conversion Strategy**
    - Recommend TEMPORARY TABLE pattern
-   - Decision must be made in Sprint 9 Week 1
+   - Decision must be made in Week 1
    - Prototype all 3 options before committing
 
 3. **Sequential Migration (No Shortcuts)**
@@ -798,7 +798,7 @@ pie title Priority Distribution (All Objects)
    - Consider materializing if frequently queried
 
 5. **Establish Performance Baseline Early**
-   - Capture SQL Server metrics in Sprint 9
+   - Capture SQL Server metrics
    - Track PostgreSQL performance at each sprint
    - Address degradation immediately (don't defer)
 
@@ -835,44 +835,44 @@ pie title Priority Distribution (All Objects)
 
 ## 📞 STAKEHOLDER QUESTIONS (DECISION REQUIRED)
 
-### Priority 1 - Sprint 9 Decisions
+### Priority 1 - Sprint (To be definided)
 
 1. **GooList Conversion Strategy:**
    - Approve TEMPORARY TABLE pattern?
    - Or require benchmark of all 3 options first?
-   - Decision needed by: Sprint 9 Day 1
+   - Decision needed by: Day 1
 
 2. **`translated` View Refresh Strategy:**
    - Approve trigger-based real-time refresh?
    - Or acceptable staleness (scheduled refresh)?
-   - Decision needed by: Sprint 9 Day 1
+   - Decision needed by: Day 1
 
 3. **Batch Size for ReconcileMUpstream:**
    - Current: TOP 10 materials per batch
    - Should we increase for PostgreSQL efficiency?
    - Benchmark recommended: 10, 50, 100, 500
-   - Decision needed by: Sprint 10
+   - Decision needed by: Sprint (To be definided)
 
 ---
 
-### Priority 2 - Sprint 10+ Decisions
+### Priority 2 - Sprint (To be definided)
 
 4. **RemoveArc Commented Logic:**
    - Significant cleanup code is commented out
    - Restore or keep commented in PostgreSQL?
    - Requires business analyst investigation
-   - Decision needed by: Sprint 11
+   - Decision needed by: Sprint (To be definided)
 
 5. **Deprecated Views (User-Specific):**
    - vw_jeremy_runs, vw_tom_perseus_sample_prep_materials
    - Still needed or can be deprecated?
-   - Decision needed by: Sprint 14
+   - Decision needed by: Sprint (To be definided)
 
 6. **SQL Server Replication Procedures:**
    - 6x sp_MS* procedures for replication
    - Still needed after PostgreSQL migration?
    - PostgreSQL replication strategy?
-   - Decision needed by: Sprint 12
+   - Decision needed by: Sprint (To be definided)
 
 ---
 
@@ -882,19 +882,19 @@ pie title Priority Distribution (All Objects)
    - Can we get anonymized production data sample?
    - What is the size of production dataset?
    - Timeline for test environment setup?
-   - Decision needed by: Sprint 9
+   - Decision needed by: Sprint (To be definided)
 
 8. **Cutover Strategy:**
    - Acceptable downtime window?
    - Blue/green deployment possible?
    - Rollback time limit?
-   - Decision needed by: Sprint 15
+   - Decision needed by: Sprint (To be definided)
 
 9. **Performance SLA:**
    - What is acceptable performance degradation?
    - Current: Target within 20% of SQL Server baseline
    - Is this acceptable or should be stricter?
-   - Decision needed by: Sprint 9
+   - Decision needed by: Sprint (To be definided)
 
 ---
 
@@ -939,7 +939,7 @@ pie title Priority Distribution (All Objects)
 **Analysis Coverage:** 4 Lotes, 68 Objects  
 **Project:** Perseus Database Migration - SQL Server → PostgreSQL 17  
 **Maintained By:** Pierre Ribeiro (Senior DBA/DBRE)  
-**Repository:** pierreribeiro/sqlserver-to-postgresql-migration
+**Repository:** pierreribeiro/olympios
 
 ---
 

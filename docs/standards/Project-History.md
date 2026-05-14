@@ -1,0 +1,42 @@
+# Project History
+
+
+## Purpose & context
+
+### The Past
+Pierre is leading the Perseus Database Migration project, a comprehensive SQL Server to PostgreSQL 17 migration. This project started with a small scope. As a senior DBA/DBRE, he systematically converted over 93 tables, 12 stored procedures, 13 functions, 19 views, 3 triggers, 68 sequences and 1 type using Google (GCP) Database Migration Service (DMS). The project emphasizes zero-downtime migration with performance targets within 20% of SQL Server baseline, requiring detailed quality assurance with scoring across five dimensions: syntax correctness, logic preservation, performance, maintainability, and security.
+At begining, the project was organized into sprints with database objects prioritized by business criticality versus technical complexity, tracked through GitHub issues and comprehensive documentation in the project repository. The migration involves complex manufacturing/supply chain procedures with graph relationships, nested set algorithms, and external system integrations requiring careful dependency management and transaction control.
+
+### Current Situation (The Present)
+Automatic object conversion through Google Database Migration Service (DMS) (GCP), using Gemini, proved to be inefficient, generating low-performing objects (code). Therefore, the project scope changed from greenfield to brownfield, where the objective is to conduct a comprehensive review of the existing pgsql code for the following objects: types, functions, and procedures.
+
+The original code written in T-SQL (SQL Server) was maintained in the repository (code base) to support the code review and optimization process, as it contains the original business logic of the application.
+
+## Organization and Workflow
+To organize and facilitate execution, the objects were divided into domains corresponding to their nature: types, functions, and procedures; and subdomains corresponding to their criticality: P0 (Critical), P1 (High), P2 (Medium), P3 (Low).
+There are dependency analysis documents between objects showing their importance to each other and in the overall context of the application.
+Pierre like to employs systematic sprint organization with objects categorized as P1 (critical), P2 (medium), and P3 (low priority). Each object follows a standardized analysis workflow: Claude analysis, P0/P1/P2 issue identification (some already made), Claude Code instruction creation, repository commits, and GitHub issue closure.
+Quality assurance uses consistent scoring methodology with detailed documentation committed to GitHub, comprehensive issue tracking, and cross-referencing between related procedures. Token budget management includes "Safe Zone" monitoring and proactive session transitions with context migration artifacts.
+Documentation follows strict patterns: analysis files use descriptive naming conventions, commit messages follow conventional format with detailed metrics, and all artifacts are centralized in the GitHub repository's docs directory. Visual documentation emphasizes dependency relationships through mind maps and Mermaid diagrams. Architecture, deployment, Methodology, runbooks and Workflows document's provides knowledge guideness to the project.
+Project management integrates comprehensive progress tracking - separated (individualized) per worktree, which means that each worktree has it's own progress tracking document to be appended to the central project progress tracking -, milestone validation, and resource planning. Sessions include guardrail compliance checks, systematic preparation workflows, and detailed handoff reports for multi-session coordination.
+
+## Key learnings & principles
+
+Critical patterns have emerged from systematic analysis: GCP DMS sometimes fails on transaction control, temp table initialization, and produces excessive LOWER() function usage that blocks database indexes. The "coordinator pattern" procedures that orchestrate other procedures present higher complexity due to dependencies.
+Quality scoring methodology has proven effective across five dimensions, with post-fix projections consistently achieving 8.0-8.5/10 scores. Medium complexity procedures and functions with simple data flow tend to achieve higher conversion quality, while procedures or functions with external system calls (OPENQUERY, linked servers) require complete manual rewrites using Foreign Data Wrapper infrastructure.
+The dual-environment approach has demonstrated 1-2 hours time savings per object through focused separation of strategic analysis and tactical execution. Military-style communication protocols and structured handoffs between sessions maintain project continuity and prevent context loss.
+
+
+## Development Approach & patterns
+
+### Test-Driven Development (TDD) with pgTAP
+
+The Perseus migration/refactoring workflow incorporates Test-Driven Development as a quality gate for all rewritten database objects. Using pgTAP, the PostgreSQL unit testing framework, every procedure, function, trigger, and view follows the Red-Green-Refactor cycle: a failing test is written first asserting the expected structure and behavior, then the minimal implementation is created to pass it, and finally the code is refactored while keeping all tests green. Tests run inside BEGIN/ROLLBACK transaction blocks, guaranteeing complete isolation with zero database pollution between runs. The TDD approach covers the full testable surface — schema structure, function signatures and return values, trigger side effects, constraint enforcement, and performance thresholds via performs_ok. For procedures containing internal COMMIT/ROLLBACK statements, specialized workaround strategies are applied since these break the outer test transaction boundary. The methodology is supported by two companion documents: a TDD Methodology Reference establishing the theoretical foundation, and a pgTAP Implementation Guide providing concrete assertion patterns, anti-patterns, and AI agent workflows. This disciplined test-first approach ensures that every migrated object is validated against its expected SQL Server behavior before being accepted into the PostgreSQL codebase, reducing regression risk and providing a living documentation layer for the entire migration.
+
+
+## Tools & resources
+
+The project relies heavily on GitHub integration through GitHub CLI (gh) - and github-official MCP tools for contingency - both for repository management, issue tracking, and documentation commits. The project repository serves as the central hub with established directory structures and naming conventions.
+GCP DMS Schema Conversion Tool provided initial conversion baseline, though requiring significant manual correction, that is the purpose of this brownfield project. For code rewriting, testing, and validation activities, there is a local instance of PostgreSQL 18, with a complete copy of the Perseus schema data schema. Through postgresql templates each git worktree has it's own database to work, whithout affecting others work.
+Sequential thinking MCP tool support complex technical analysis and systematic quality assessment.
+Context7 MCP and Serena tools assist with token usage monitoring and session resource management. File management tools handle artifact creation and delivery when GitHub API limitations require alternative approaches for large documents. Code-review plugin is an automated code review for pull requests using multiple specialized agents with confidence-based scoring. Feature-dev plugin is a comprehensive feature development workflow with specialized agents for codebase exploration, architecture design, and quality review. Serena plugin is a semantic code analysis MCP server providing intelligent code understanding, refactoring suggestions, and codebase navigation through language server protocol integration. Claude-mem is a persistent memory system for Claude Code - seamlessly preserve context across sessions. Claude Context is an MCP plugin that adds semantic code search to Claude Code and other AI coding agents, giving them deep context from your entire codebase. There is also a set of skills and agents to be used in tasks such as code review, code optimization, pgsql programming, unit testing using pgTap, etc. A detailed list will be provided.

@@ -171,7 +171,7 @@ flowchart TB;
                 EPH[("perseus_*_eph_*<br/>(ephemeral test DBs)<br/>cycle &lt; 3 s ✅")]
             end
 
-            subgraph REPO["📂 Repo Hierarchy<br/>~/dev/repos/github.com/pierreribeiro/<br/>sqlserver-to-postgresql-migration/"]
+            subgraph REPO["📂 Repo Hierarchy<br/>~/dev/repos/github.com/pierreribeiro/<br/>olympios/"]
                 BARE[".bare/<br/>(GIT_DIR — bare repo)"]
                 W0["main/<br/>(worktree)"]
                 W1["feat-users-rbac/<br/>(worktree)"]
