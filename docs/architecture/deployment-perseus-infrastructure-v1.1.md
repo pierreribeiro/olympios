@@ -277,7 +277,7 @@ These match the original `infra/database/` Docker-based setup (with the `perseus
 ## 4. Deployment Process Flowchart
 
 ```mermaid
-flowchart TD
+flowchart TD;
     START([👤 Developer wants to deploy<br/>Perseus PG18 environment])
 
     START --> VERIFY{Prerequisites<br/>verified?<br/>see § 1}

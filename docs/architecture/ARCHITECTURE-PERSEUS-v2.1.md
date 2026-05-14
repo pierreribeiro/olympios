@@ -159,7 +159,7 @@ One Docker container per Git worktree, each running its own PostgreSQL cluster o
 > **v2.1 update:** preRemove hook now shown as declarative (native gtr feature), no longer a defensive shell wrapper.
 
 ```mermaid
-flowchart TB
+flowchart TB;
     subgraph DEV["💻 Developer Machine — macOS Tahoe 26.4.1 (Apple Silicon)"]
         subgraph FS["📦 APFS Volume (Copy-on-Write)"]
             subgraph PG["🗄️ PostgreSQL 18 (Native, Homebrew)"]

@@ -91,7 +91,7 @@ If any check fails, fix before proceeding.
 ## 3. Flowchart
 
 ```mermaid
-flowchart LR
+flowchart LR;
     Prod([perseus<br/>production - conceptual])
     Dev[perseus_dev<br/>local seed DB]
     Template[(dev_template<br/>golden<br/>datistemplate=true)]

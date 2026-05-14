@@ -1,4 +1,4 @@
-# 🛠️ Workflow Document — Project Perseus (v3.0)
+# 🛠️ Workflow Document — Project Perseus (v3.1)
 ## Daily Operations: Orchestrator + 3 Subagents TDD on Worktree-Driven PostgreSQL 18
 
 ---
@@ -6,11 +6,11 @@
 > **Project:** Perseus — SQL Server → PostgreSQL Migration
 > **Organization:** DinamoTech
 > **Document Type:** Workflow & Operations Specification (WKF-DOC)
-> **Version:** 3.0
-> **Date:** 2026-05-11
+> **Version:** 3.1
+> **Date:** 2026-05-13
 > **Author:** Pierre Ribeiro (DBRE / Senior DBA) + Claude (Architect persona)
 > **Status:** Active baseline
-> **Supersedes:** WORKFLOW-PERSEUS-v2.2.md
+> **Supersedes:** WORKFLOW-PERSEUS-v3.0.md
 > **Audience:** Pierre + future Claude Code sessions + DinamoTech DBREs adopting the gold standard
 > **Companions:** ARCHITECTURE-PERSEUS-v2.1.md, deployment-perseus-infrastructure-v1.1.md, TDD_workflow.md, TDD_workflow_brownfield.md
 
@@ -59,6 +59,7 @@ Perseus daily work is a 7-step loop. Pierre starts Claude Code in the main direc
 
 ## Table of Contents
 
+0. [Bootstrap from Scratch](#0-bootstrap-from-scratch)
 1. [Workflow Overview & End-to-End Flowchart](#1-workflow-overview--end-to-end-flowchart)
 2. [Components Inventory](#2-components-inventory)
 3. [Directory Structure](#3-directory-structure)
@@ -70,6 +71,211 @@ Perseus daily work is a 7-step loop. Pierre starts Claude Code in the main direc
 9. [Daily Operations Cookbook](#9-daily-operations-cookbook)
 10. [Troubleshooting Playbook](#10-troubleshooting-playbook)
 11. [Acceptance Checklist](#11-acceptance-checklist)
+
+---
+
+## 0. Bootstrap from Scratch
+
+For a developer cloning the Perseus repository on a brand-new machine, this section resolves the **chicken-and-egg problem**: the scripts that bootstrap the repo live inside the repo itself. The bootstrap is solved with the **self-pulling curl pattern** — a single command downloads `bootstrap-perseus-repo.sh` directly from GitHub raw and executes it.
+
+### 0.1 When to use § 0
+
+Run § 0 **only** in these cases:
+- First clone on a brand-new developer machine
+- Workspace was deleted and needs to be rebuilt from scratch
+- Migration to a new mac
+
+If `~/dev/repos/github.com/pierreribeiro/sqlserver-to-postgresql-migration/` already exists with `.bare/` inside, **skip § 0** and proceed to § 9.1.
+
+### 0.2 Bootstrap flowchart
+
+```mermaid
+flowchart TD;
+    Start([Brand-new mac<br/>empty workspace])
+    InstallTools[brew install postgresql@18<br/>git-gtr gh tmux jq fzf]
+    SetEnv[Add to ~/.zshrc:<br/>REPO_BASE_DIR<br/>PERSEUS_CLIENT<br/>PERSEUS_BASE]
+    SourceShell[source ~/.zshrc<br/>OR open new terminal]
+    SelfPull[curl raw.githubusercontent.com<br/>bootstrap-perseus-repo.sh<br/>pipe to bash]
+    DoBootstrap[Script clones bare repo<br/>creates main worktree]
+    CdMain[cd PERSEUS_BASE/main]
+    ConfigLocal[git config --local<br/>perseus.pg.* values]
+    InitDB[./infra/database/init-db.sh init]
+    UpdatePgpass[Add line to ~/.pgpass<br/>chmod 600]
+    PopDev[Populate perseus_dev<br/>developer choice]
+    Promote[./scripts/promote-dev-to-template.sh]
+    Verify[git gtr doctor]
+    Done([Ready for daily workflow<br/>see Section 7])
+
+    Start --> InstallTools
+    InstallTools --> SetEnv
+    SetEnv --> SourceShell
+    SourceShell --> SelfPull
+    SelfPull --> DoBootstrap
+    DoBootstrap --> CdMain
+    CdMain --> ConfigLocal
+    ConfigLocal --> InitDB
+    InitDB --> UpdatePgpass
+    UpdatePgpass --> PopDev
+    PopDev --> Promote
+    Promote --> Verify
+    Verify --> Done
+
+    classDef start fill:#fde68a,stroke:#92400e,color:#92400e;
+    classDef install fill:#bfdbfe,stroke:#1e3a8a,color:#1e3a8a;
+    classDef selfpull fill:#fef08a,stroke:#854d0e,color:#854d0e;
+    classDef config fill:#bbf7d0,stroke:#166534,color:#166534;
+    classDef done fill:#bae6fd,stroke:#075985,color:#075985;
+    class Start,Done start;
+    class InstallTools,SetEnv,SourceShell install;
+    class SelfPull,DoBootstrap selfpull;
+    class CdMain,ConfigLocal,InitDB,UpdatePgpass,PopDev,Promote,Verify config;
+```
+
+### 0.3 Step-by-step
+
+#### Step 0.3.1 — Install dependencies
+
+```bash
+brew install postgresql@18 git-gtr gh tmux jq fzf
+```
+
+#### Step 0.3.2 — Configure shell environment
+
+Append to `~/.zshrc`:
+
+```bash
+# Global root for all projects on this machine
+export REPO_BASE_DIR="$HOME/workspace/projects"
+
+# Client identifier (DinamoTech convention: organize by client)
+export PERSEUS_CLIENT="amyris"
+
+# Project root folder (computed from the above)
+export PERSEUS_BASE="$REPO_BASE_DIR/$PERSEUS_CLIENT/sqlserver-to-postgresql-migration"
+
+# Convenience aliases
+alias perseus='cd $PERSEUS_BASE'
+alias perseus-main='cd $PERSEUS_BASE/main'
+```
+
+Then reload:
+
+```bash
+source ~/.zshrc
+```
+
+#### Step 0.3.3 — Bootstrap the repo (self-pulling)
+
+The **chicken-and-egg solver**:
+
+```bash
+# Ensure parent client folder exists
+mkdir -p "$REPO_BASE_DIR/$PERSEUS_CLIENT"
+
+# Self-pulling bootstrap — uses $REPO_BASE_DIR and $PERSEUS_CLIENT from the shell environment
+curl -fsSL https://raw.githubusercontent.com/pierreribeiro/sqlserver-to-postgresql-migration/main/scripts/bootstrap-perseus-repo.sh | bash
+```
+
+> **What this does:**
+> - `curl` downloads `bootstrap-perseus-repo.sh` from GitHub raw — no clone required first
+> - `bash` pipes it to a shell for immediate execution
+> - The script then performs: `git clone --bare`, creates the hierarchy `~/dev/repos/github.com/pierreribeiro/sqlserver-to-postgresql-migration/`, runs `git worktree add main main`, sets the bare-repo fetch refspec
+
+After this step, all subsequent scripts and configuration files are available locally under `$PERSEUS_BASE/main/`.
+
+#### Step 0.3.4 — Configure per-developer git locals
+
+```bash
+cd "$PERSEUS_BASE/main"
+git config --local perseus.pg.host     localhost
+git config --local perseus.pg.port     5432
+git config --local perseus.pg.user     perseus_owner
+git config --local perseus.pg.template dev_template
+git config --local perseus.pg.dbprefix perseus
+git gtr config set gtr.ai.default claude
+git gtr config set gtr.editor.default code
+```
+
+#### Step 0.3.5 — Provision the PG18 cluster
+
+Delegated to deployment v1.1. From `$PERSEUS_BASE/main`:
+
+```bash
+# Copy .env.example if not already present
+[ -f infra/database/.env ] || cp infra/database/.env.example infra/database/.env
+
+# Edit if needed (defaults are sensible)
+$EDITOR infra/database/.env
+
+# Initialize the cluster — creates: postgres superuser, perseus_owner role, perseus_dev DB
+./infra/database/init-db.sh init
+```
+
+The script prints a generated password at the end. **Save it.**
+
+#### Step 0.3.6 — Configure `~/.pgpass`
+
+```bash
+echo "localhost:5432:*:perseus_owner:<generated-password>" >> ~/.pgpass
+chmod 600 ~/.pgpass
+```
+
+Replace `<generated-password>` with the value printed by `init-db.sh init`.
+
+#### Step 0.3.7 — Populate `perseus_dev`
+
+The developer is responsible for populating `perseus_dev` with production-derived data. This is **out of scope** for both this workflow doc and deployment v1.1 — see `deployment-perseus-template-v1.0.md` § 1 for the conceptual placement of this step.
+
+Once `perseus_dev` has user objects, proceed to Step 0.3.8.
+
+#### Step 0.3.8 — Promote `perseus_dev` → `dev_template`
+
+```bash
+cd "$PERSEUS_BASE/main"
+./scripts/promote-dev-to-template.sh
+```
+
+See `deployment-perseus-template-v1.0.md` for full details. After this step, `dev_template` exists with `datistemplate=true` and is ready to be cloned by `provision-branch-db.sh` whenever a worktree is created.
+
+#### Step 0.3.9 — Verify the bootstrap
+
+```bash
+git gtr doctor
+./infra/database/init-db.sh status
+psql -h localhost -U postgres -d postgres -c "
+  SELECT datname, datistemplate
+    FROM pg_database
+   WHERE datname IN ('perseus_dev','dev_template');
+"
+```
+
+Expected:
+- `gtr doctor` reports no issues
+- `init-db.sh status` shows cluster running
+- `psql` returns 2 rows, `dev_template.datistemplate = t`
+
+If all three pass, bootstrap is complete. Proceed to § 7 (The Seven-Step Workflow) for daily operations.
+
+### 0.4 Troubleshooting bootstrap
+
+| Symptom | Cause | Resolution |
+|---|---|---|
+| `curl` returns 404 | Branch name in URL doesn't exist (e.g., `master` vs `main`) | URL uses `/main/scripts/...` — verify the repo's default branch matches |
+| `curl ... \| bash` fails: "command not found" | Network/firewall blocking GitHub raw | Use VPN or download the script manually, then `bash bootstrap-perseus-repo.sh` |
+| `git clone --bare` fails: permission denied | SSH key not configured for GitHub | `gh auth login` or `ssh-keygen` + add to GitHub SSH keys |
+| `bootstrap-perseus-repo.sh` fails: directory exists | Repo already bootstrapped | Skip § 0, proceed to § 7. Or delete the directory to reset (destructive). |
+| `init-db.sh init` fails | PG18 prereqs missing | See deployment v1.1 § 1 (Prerequisites) and § 7 (Troubleshooting) |
+| Bootstrap script aborts: "REPO_BASE_DIR not set" | Shell did not load `~/.zshrc` updates | Run `source ~/.zshrc` or open a new terminal, then retry curl |
+| Bootstrap script aborts: "PERSEUS_CLIENT not set" | Shell did not load `~/.zshrc` updates OR Step 0.3.2 was incomplete | Confirm `~/.zshrc` has both `REPO_BASE_DIR` and `PERSEUS_CLIENT` exports; re-source |
+
+### 0.5 What § 0 does NOT cover
+
+| Concern | Where |
+|---|---|
+| PG18 cluster lifecycle (start/stop/destroy/recreate) | `deployment-perseus-infrastructure-v1.1.md` § 6 |
+| `perseus_dev` population strategy | Developer's choice — out of scope |
+| `dev_template` promotion details | `deployment-perseus-template-v1.0.md` |
+| Daily work workflow | § 7 below |
 
 ---
 
@@ -1335,11 +1541,12 @@ This is exactly why the `plan.md` / `report.md` file protocol exists: it's the *
 | 2.0 | 2026-04-30 | gtr-centric architecture, defensive bash wrapper for preRemove |
 | 2.1 | 2026-04-30 | Declarative preRemove hook; ephemeral DB < 3 s validated |
 | 2.2 | 2026-05-06 | Minor naming alignment; perseus_admin → perseus_owner partial |
-| **3.0** | **2026-05-11** | **Orchestrator + 3 subagents TDD; Phase 0 brownfield; 2-pane cockpit; greenfield/brownfield mode detection; reference-based first-time setup** |
+| 3.0 | 2026-05-11 | Orchestrator + 3 subagents TDD; Phase 0 brownfield; 2-pane cockpit; greenfield/brownfield mode detection; reference-based first-time setup |
+| **3.1** | **2026-05-13** | **Added § 0 Bootstrap from Scratch — resolves chicken-and-egg via curl self-pulling pattern; integrates dev_template promotion step; bootstrap flowchart Mermaid** |
 
 ---
 
-*End of Workflow Document v3.0 — Project Perseus*
-*Active baseline as of 2026-05-11*
-*Companions: ARCHITECTURE-PERSEUS-v2.1.md, deployment-perseus-infrastructure-v1.1.md, TDD_workflow.md, TDD_workflow_brownfield.md*
-*Supersedes: WORKFLOW-PERSEUS-v2.2.md*
+*End of Workflow Document v3.1 — Project Perseus*
+*Active baseline as of 2026-05-13*
+*Companions: ARCHITECTURE-PERSEUS-v2.1.md, deployment-perseus-infrastructure-v1.1.md, deployment-perseus-template-v1.0.md, TDD_workflow.md, TDD_workflow_brownfield.md*
+*Supersedes: WORKFLOW-PERSEUS-v3.0.md*
