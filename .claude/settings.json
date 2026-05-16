@@ -1,6 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_MEM_PLUGIN_ROOT": "/Users/pierre.ribeiro/.claude/plugins/marketplaces/thedotmack/plugin",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_AUTO_CONNECT_IDE": "true",
+    "ENABLE_LSP_TOOL": "1"
+  },
   "permissions": {
+    "defaultMode": "auto",
     "allow": [
       "Bash",
       "Read",
@@ -24,8 +31,7 @@
       "WebFetch",
       "WebSearch"
     ],
-    "deny": [],
-    "defaultMode": "acceptEdits"
+    "deny": []
   },
    "hooks": {
     "UserPromptSubmit": [
@@ -58,8 +64,7 @@
     "context7",
     "sequentialthinking"
   ],
-  "enabledPlugins": {
-	"everything-claude-code@everything-claude-code": true,
+  "enabledPlugins": {	
 	"typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "claude-mem@thedotmack": true,
@@ -68,12 +73,17 @@
     "serena@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "claude-team@martian-engineering": true,
+    "claude-code-setup@claude-plugins-official": true,    
     "context7-plugin@context7-marketplace": true,
     "coderabbit@claude-plugins-official": true,
-    "desktop-commander@claude-plugins-official": true
+    "desktop-commander@claude-plugins-official": true,
+    "repomix-explorer@repomix": true
 	  },
   "worktreeDir": "project-root/.worktrees/",
-  "planDirectory": "project-root/.claude/plans"
+  "planDirectory": "project-root/.claude/plans",
+  "skillListingBudgetFraction": 0.02,
+  "skillListingMaxDescChars": 2048,
+  "autoMemoryEnabled": true,
+  "autoDreamEnabled": true,
+  "model": "opusplan"
 }
